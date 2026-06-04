@@ -3,6 +3,8 @@ packaging==26.2
 peewee==4.0.6
 pluggy==1.6.0
 psycopg==3.3.4
+psycopg2-binary==2.9.12
 Pygments==2.20.0
 pytest==9.0.3
+python-dotenv==1.2.2
 typing_extensions==4.15.0
