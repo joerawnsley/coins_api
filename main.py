@@ -1,10 +1,12 @@
 from peewee import PostgresqlDatabase
-from os import getenv
+import os, dotenv
+
+dotenv.load_dotenv()
 
 db = PostgresqlDatabase(
     'joe',
-    user=getenv('DB_USER'),
-    host=getenv('DB_HOST'),
-    port=getenv('DB_PORT'),
-    password=getenv('DB_PASSWORD')
+    user=os.getenv('DB_USER'),
+    host=os.getenv('DB_HOST'),
+    port=os.getenv('DB_PORT'),
+    password=os.getenv('DB_PASSWORD')
     )
