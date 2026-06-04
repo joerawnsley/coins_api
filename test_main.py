@@ -1,4 +1,4 @@
-from main import connection
+from main import db
 
 def test_connection():
-    assert connection
+    assert db

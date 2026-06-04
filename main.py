@@ -1,1 +1,1 @@
-connection = None
+db = None
