@@ -1,0 +1,16 @@
+from peewee import *
+from main import db
+
+class BaseModel(Model):
+    class Meta:
+        database = db
+        schema = 'coins'
+
+class Coin(BaseModel):
+    id = AutoField(column_name='coin_id', primary_key=True)
+    coin_name = TextField()
+    
+    class Meta:
+        table_name = 'coins'
+    
+        
