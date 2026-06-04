@@ -14,3 +14,9 @@ class Coin(BaseModel):
         table_name = 'coins'
     
         
+class Duty(BaseModel):
+    id = AutoField(column_name='duty_id', primary_key=True)
+    description = TextField()
+    
+    class Meta:
+        table_name = 'duties'
