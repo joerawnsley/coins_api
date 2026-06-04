@@ -1,4 +1,4 @@
-from main import db
+from database import db
 from models import Coin, Duty
 
 def test_connection():

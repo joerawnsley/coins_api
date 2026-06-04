@@ -1,5 +1,5 @@
 from peewee import *
-from main import db
+from database import db
 
 class BaseModel(Model):
     class Meta:
