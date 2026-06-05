@@ -5,9 +5,9 @@ dotenv.load_dotenv()
 
 postgres_db = PostgresqlDatabase(
     'joe',
-    user=os.getenv('DB_USER'),
+    user='joe',
+    port=25060,
     host=os.getenv('DB_HOST'),
-    port=os.getenv('DB_PORT'),
     password=os.getenv('DB_PASSWORD')
     )
 
