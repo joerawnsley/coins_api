@@ -29,7 +29,7 @@ class Coin(BaseModel):
 class Duty(BaseModel):
     id = UUIDField(column_name='duty_id', default=uuid.uuid4, primary_key=True)
     description = TextField()
-    duty_name = TextField()
+    duty_number = IntegerField()
     
     class Meta:
         table_name = 'duties'

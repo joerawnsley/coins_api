@@ -34,7 +34,7 @@ def test_add_a_coin(empty_database):
     assert coin.coin_name == 'Automate'
 
 def test_add_a_duty(empty_database):
-    Duty.insert(duty_name='Duty 1', description='Script and code').execute()
+    Duty.insert(duty_number=1, description='Script and code').execute()
     duty = Duty.select().first()
     print(f'name: {duty.duty_number}, id: {duty.id}, description: {duty.description}')
     assert is_valid_uuid(duty.id)
