@@ -1,5 +1,5 @@
-from database import db
-from models import Coin, Duty
+from src.database import db
+from src.models import Coin, Duty
 from peewee import SchemaManager
 import pytest
 
