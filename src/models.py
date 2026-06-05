@@ -7,15 +7,15 @@ dotenv.load_dotenv()
 dev_schema = 'coins-dev'
 prod_schema = 'coins-prod'
 
-if os.getenv('REMOTE_SCHEMA') == 'PROD':
+if os.getenv('REMOTE_SCHEMA') == 'prod':
     current_schema = prod_schema
-if os.getenv('REMOTE_SCHEMA') == 'DEV':
+if os.getenv('REMOTE_SCHEMA') == 'dev':
     current_schema = dev_schema
 
 class BaseModel(Model):
     class Meta:
         database = db
-        if os.getenv('DB_LOCATION') == 'REMOTE':
+        if os.getenv('DB_LOCATION') == 'remote':
             schema = current_schema
 
 class Coin(BaseModel):

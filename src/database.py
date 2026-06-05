@@ -13,7 +13,7 @@ postgres_db = PostgresqlDatabase(
 
 sqlite_db = SqliteDatabase(':memory:')
 
-if os.getenv('DB_LOCATION') == 'REMOTE':
+if os.getenv('DB_LOCATION') == 'remote':
     db = postgres_db
-if os.getenv('DB_LOCATION') == 'MEMORY':
+if os.getenv('DB_LOCATION') == 'memory':
     db = sqlite_db
