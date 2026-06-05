@@ -36,6 +36,7 @@ def test_add_a_coin(empty_database):
 def test_add_a_duty(empty_database):
     Duty.insert(duty_name='Duty 1', description='Script and code').execute()
     duty = Duty.select().first()
-    print(f'name: {duty.duty_name}, id: {duty.id}, description: {duty.description}')
+    print(f'name: {duty.duty_number}, id: {duty.id}, description: {duty.description}')
     assert is_valid_uuid(duty.id)
     assert 'code' in duty.description
+    assert type(duty.duty_number) is int
