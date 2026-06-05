@@ -1,6 +1,6 @@
 from peewee import *
 from src.database import db
-import os, dotenv
+import os, dotenv, uuid
 
 dotenv.load_dotenv()
 
@@ -19,7 +19,7 @@ class BaseModel(Model):
             schema = current_schema
 
 class Coin(BaseModel):
-    id = AutoField(column_name='coin_id', primary_key=True)
+    id = UUIDField(column_name='coin_id', default=uuid.uuid4, primary_key=True)
     coin_name = TextField()
     
     class Meta:
@@ -27,7 +27,7 @@ class Coin(BaseModel):
     
         
 class Duty(BaseModel):
-    id = AutoField(column_name='duty_id', primary_key=True)
+    id = UUIDField(column_name='duty_id', default=uuid.uuid4, primary_key=True)
     description = TextField()
     duty_name = TextField()
     
