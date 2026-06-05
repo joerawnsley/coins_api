@@ -1,26 +1,34 @@
 from database import db
 from models import Coin, Duty
+from peewee import SchemaManager
+import pytest
 
 def test_connection():
     connection = db.connect()
+    print(connection)
     assert connection
     if not db.is_closed():
         db.close()
 
-def test_pull_coin_from_db():
+
+@pytest.fixture()
+def test_database():
     with db:
-        first_coin = Coin.select().first()
-        print(first_coin.id, first_coin.coin_name)
-        assert first_coin.id
-        assert first_coin.coin_name
-    if not db.is_closed():
-        db.close()
+        db.create_tables([Coin, Duty])
+        
+        yield
+        
+        db.drop_tables([Coin, Duty])
+
+def test_coin_table_is_empty(test_database):
     
-def test_pull_duty_from_db():
-    with db:
-        first_duty = Duty.select().first()
-        print(first_duty.id, first_duty.description)
-        assert first_duty.id
-        assert first_duty.description
-    if not db.is_closed():
-        db.close()
+    coins = Coin.select()
+    assert list(coins) == []
+    
+def test_add_a_coin(test_database):
+    Coin.insert(coin_name='Automate').execute()
+    coin = Coin.select().first()
+    print(f'name: {coin.coin_name}, id: {coin.id}')
+    assert coin.id == 1
+    assert coin.coin_name == 'Automate'
+    
