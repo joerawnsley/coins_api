@@ -15,7 +15,8 @@ if os.getenv('REMOTE_SCHEMA') == 'DEV':
 class BaseModel(Model):
     class Meta:
         database = db
-        schema = current_schema
+        if os.getenv('DB_LOCATION') == 'REMOTE':
+            schema = current_schema
 
 class Coin(BaseModel):
     id = AutoField(column_name='coin_id', primary_key=True)
