@@ -1,9 +1,9 @@
 from src.database import db
 from src.models import Coin, Duty
 from src.utils import is_valid_uuid
-from peewee import SchemaManager
-import pytest
+import pytest, json
 
+# -------- connection test --------
 def test_connection():
     connection = db.connect()
     print(connection)
@@ -11,7 +11,7 @@ def test_connection():
     if not db.is_closed():
         db.close()
 
-
+# -------- empty database tests --------
 @pytest.fixture()
 def empty_database():
     with db:
@@ -40,3 +40,38 @@ def test_add_a_duty(empty_database):
     assert is_valid_uuid(duty.id)
     assert 'code' in duty.description
     assert type(duty.duty_number) is int
+
+# -------- full database tests --------
+
+with open('seed_data/seed_data.json') as json_data:
+    seed_data = json.load(json_data)
+    all_coins = seed_data['coins']
+    all_duties = seed_data['duties']
+    
+@pytest.fixture()
+def full_database():
+    with db:
+        db.create_tables([Coin, Duty])
+        Coin.insert_many(all_coins).execute()
+        Duty.insert_many(all_duties).execute()
+        
+        yield
+        
+        db.drop_tables([Coin, Duty])
+        
+def test_5_coins_exist(full_database):
+    for coin in Coin.select():
+        print(coin.coin_name)
+    assert Coin.select().count() == 5
+
+def test_13_duties_exist(full_database):
+    assert Duty.select().count() == 13
+    
+def test_assemble_coin_exists(full_database):
+    assemble = Coin.select().where(Coin.coin_name == 'Assemble')
+    assert assemble.exists()
+
+def test_duty_10_is_monitoring(full_database):
+    duty_10 = Duty.get(Duty.duty_number == 10)
+    print(duty_10.description)
+    assert "monitoring" in duty_10.description
