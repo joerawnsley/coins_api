@@ -1,10 +1,21 @@
 from peewee import *
 from database import db
+import os, dotenv
+
+dotenv.load_dotenv()
+
+dev_schema = 'coins-dev'
+prod_schema = 'coins-prod'
+
+if os.getenv('REMOTE_SCHEMA') == 'PROD':
+    current_schema = prod_schema
+if os.getenv('REMOTE_SCHEMA') == 'DEV':
+    current_schema = dev_schema
 
 class BaseModel(Model):
     class Meta:
         database = db
-        schema = 'coins'
+        schema = current_schema
 
 class Coin(BaseModel):
     id = AutoField(column_name='coin_id', primary_key=True)
