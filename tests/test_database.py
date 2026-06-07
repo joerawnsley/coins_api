@@ -75,3 +75,18 @@ def test_duty_10_is_monitoring(full_database):
     duty_10 = Duty.get(Duty.duty_number == 10)
     print(duty_10.description)
     assert "monitoring" in duty_10.description
+    
+def test_duty_8_is_architecture(full_database):
+    duty_8 = Duty.get(Duty.duty_number == 8)
+    print(duty_8.description)
+    assert "architecture" in duty_8.description
+
+# ------ test duties can be added to coins ---------------
+
+def test_add_duty_to_coin(full_database):
+    assemble = Coin.get(Coin.coin_name == 'Assemble')
+    duty_8 = Duty.get(Duty.duty_number == 8)
+    assemble.duties.add(duty_8)
+    assemble_duties = [duty.duty_number for duty in assemble.duties]
+    assert 8 in assemble_duties
+    assert 7 not in assemble_duties
