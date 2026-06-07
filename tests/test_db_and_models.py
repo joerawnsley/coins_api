@@ -122,3 +122,29 @@ def test_coin_has_completion_marker(full_database):
     completion_marker = houston.is_complete
     assert type(completion_marker) == bool
     
+# test duplicated seed data
+
+with open('seed_data/duplicated_data.json') as json_data:
+    seed_data = json.load(json_data)
+    all_coins = seed_data['coins']
+    all_duties = seed_data['duties']
+
+@pytest.fixture
+def duplicated_database():
+    with db:
+        db.create_tables([Coin, Duty, Coin.duties.get_through_model()])
+        Coin.insert_many(all_coins).execute()
+        Duty.insert_many(all_duties).execute()
+        
+        yield
+        
+        db.drop_tables([Coin, Duty, Coin.duties.get_through_model()])
+
+def test_5_coins_exist(duplicated_database):
+    for coin in Coin.select():
+        print(coin.coin_name)
+    assert Coin.select().count() == 5
+
+def test_13_duties_exist(duplicated_database):
+    assert Duty.select().count() == 13
+        
