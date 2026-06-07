@@ -1,7 +1,7 @@
 from src.database import db
 from src.models import Coin, Duty
 from src.utils import is_valid_uuid
-import pytest, json, peewee
+import pytest, json, peewee, os
 
 import logging
 logging.getLogger('peewee').addHandler(logging.StreamHandler())
@@ -128,15 +128,20 @@ def test_duty_with_same_number_not_allowed(full_database):
     with pytest.raises(peewee.IntegrityError) as error:
         Duty.insert(duty_number=1, description='Script and code').execute()
     
-    db.rollback()
+    if os.getenv('DB_LOCATION') == 'remote':
+        db.rollback()
+    
+    print(error.value)
     assert 'unique constraint' in str(error.value).lower()
 
 def test_coin_with_same_name_not_allowed(full_database):
     Coin.insert(coin_name='New Coin').execute()
     with pytest.raises(peewee.IntegrityError) as error:
         Coin.insert(coin_name='Automate').execute()
-        
     
-    db.rollback()
+    if os.getenv('DB_LOCATION') == 'remote':
+        db.rollback()
+    
+    print(error.value)
     assert 'unique constraint' in str(error.value).lower()
 
