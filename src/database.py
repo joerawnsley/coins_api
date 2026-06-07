@@ -3,7 +3,7 @@ import os, dotenv
 
 dotenv.load_dotenv()
 
-postgres_db = PostgresqlDatabase(
+remote_postgres_db = PostgresqlDatabase(
     'joe',
     user='joe',
     port=25060,
@@ -14,6 +14,6 @@ postgres_db = PostgresqlDatabase(
 sqlite_db = SqliteDatabase(':memory:')
 
 if os.getenv('DB_LOCATION') == 'remote':
-    db = postgres_db
+    db = remote_postgres_db
 if os.getenv('DB_LOCATION') == 'memory':
     db = sqlite_db
