@@ -18,14 +18,6 @@ class BaseModel(Model):
         if os.getenv('DB_LOCATION') == 'remote':
             schema = current_schema
 
-class Coin(BaseModel):
-    id = UUIDField(column_name='coin_id', default=uuid.uuid4, primary_key=True)
-    coin_name = TextField()
-    
-    class Meta:
-        table_name = 'coins'
-    
-        
 class Duty(BaseModel):
     id = UUIDField(column_name='duty_id', default=uuid.uuid4, primary_key=True)
     description = TextField()
@@ -33,3 +25,10 @@ class Duty(BaseModel):
     
     class Meta:
         table_name = 'duties'
+
+class Coin(BaseModel):
+    id = UUIDField(column_name='coin_id', default=uuid.uuid4, primary_key=True)
+    coin_name = TextField()
+    
+    class Meta:
+        table_name = 'coins'
