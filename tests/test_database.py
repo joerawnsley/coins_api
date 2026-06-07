@@ -89,13 +89,21 @@ def test_duty_8_is_architecture(full_database):
 
 def test_add_duty_to_coin(full_database):
     assemble = Coin.get(Coin.coin_name == 'Assemble')
-    duty_8 = Duty.get(Duty.duty_number == 8)
     assemble_duties = [duty.duty_number for duty in assemble.duties]
     print(assemble_duties)
+    assert len(assemble_duties) == 0
     
+    duty_8 = Duty.get(Duty.duty_number == 8)
     assemble.duties.add(duty_8)
     
     assemble_duties = [duty.duty_number for duty in assemble.duties]
     print(assemble_duties)
+    assert len(assemble_duties) == 1
     assert 8 in assemble_duties
     assert 7 not in assemble_duties
+    
+# def test_add_two_duties_to_coin(full_database):
+#     houston = Coin.get(Coin.coin_name == "Houston, Prepare to Launch")
+#     duty_5 = Duty.get(Duty.duty_number == 5)
+#     duty_7 = Duty.get(Duty.duty_number == 7)
+#     duty_10 = Duty.get(Duty.duty_number == 10)
