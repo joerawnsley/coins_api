@@ -23,7 +23,7 @@ def empty_database():
         
         yield
         
-        db.drop_tables([Coin, Duty])
+        db.drop_tables([Coin, Duty, Coin.duties.get_through_model()])
 
 def test_coin_table_is_empty(empty_database):
     
@@ -61,7 +61,7 @@ def full_database():
         
         yield
         
-        db.drop_tables([Coin, Duty])
+        db.drop_tables([Coin, Duty, Coin.duties.get_through_model()])
         
 def test_5_coins_exist(full_database):
     for coin in Coin.select():
