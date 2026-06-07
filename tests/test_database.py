@@ -3,6 +3,10 @@ from src.models import Coin, Duty
 from src.utils import is_valid_uuid
 import pytest, json
 
+import logging
+logging.getLogger('peewee').addHandler(logging.StreamHandler())
+logging.getLogger('peewee').setLevel(logging.DEBUG)
+
 # -------- connection test --------
 def test_connection():
     connection = db.connect()
@@ -15,7 +19,7 @@ def test_connection():
 @pytest.fixture()
 def empty_database():
     with db:
-        db.create_tables([Coin, Duty])
+        db.create_tables([Coin, Duty, Coin.duties.get_through_model()])
         
         yield
         
@@ -51,7 +55,7 @@ with open('seed_data/seed_data.json') as json_data:
 @pytest.fixture()
 def full_database():
     with db:
-        db.create_tables([Coin, Duty])
+        db.create_tables([Coin, Duty, Coin.duties.get_through_model()])
         Coin.insert_many(all_coins).execute()
         Duty.insert_many(all_duties).execute()
         
@@ -86,7 +90,12 @@ def test_duty_8_is_architecture(full_database):
 def test_add_duty_to_coin(full_database):
     assemble = Coin.get(Coin.coin_name == 'Assemble')
     duty_8 = Duty.get(Duty.duty_number == 8)
-    assemble.duties.add(duty_8)
     assemble_duties = [duty.duty_number for duty in assemble.duties]
+    print(assemble_duties)
+    
+    assemble.duties.add(duty_8)
+    
+    assemble_duties = [duty.duty_number for duty in assemble.duties]
+    print(assemble_duties)
     assert 8 in assemble_duties
     assert 7 not in assemble_duties
