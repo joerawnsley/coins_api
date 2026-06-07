@@ -29,6 +29,7 @@ class Duty(BaseModel):
 class Coin(BaseModel):
     id = UUIDField(column_name='coin_id', default=uuid.uuid4, primary_key=True)
     coin_name = TextField()
+    duties = ManyToManyField(Duty, backref='coins')
     
     class Meta:
         table_name = 'coins'
