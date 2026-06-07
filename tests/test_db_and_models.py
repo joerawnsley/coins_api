@@ -116,4 +116,9 @@ def test_add_two_duties_to_coin(full_database):
     print(houston_duties)
     assert 5 in houston_duties; assert 7 in houston_duties; assert 10 in houston_duties
     assert len(houston_duties) == 3
+
+def test_coin_has_completion_marker(full_database):
+    houston = Coin.get(Coin.coin_name == "Houston, Prepare to Launch")
+    completion_marker = houston.is_complete
+    assert type(completion_marker) == bool
     
