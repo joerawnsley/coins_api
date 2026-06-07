@@ -1,11 +1,11 @@
 from src.database import db
 from src.models import Coin, Duty
 from src.utils import is_valid_uuid
-import pytest, json
+import pytest, json, peewee
 
 import logging
-# logging.getLogger('peewee').addHandler(logging.StreamHandler())
-# logging.getLogger('peewee').setLevel(logging.DEBUG)
+logging.getLogger('peewee').addHandler(logging.StreamHandler())
+logging.getLogger('peewee').setLevel(logging.DEBUG)
 
 # -------- connection test --------
 def test_connection():
@@ -122,30 +122,21 @@ def test_coin_has_completion_marker(full_database):
     completion_marker = houston.is_complete
     assert type(completion_marker) == bool
     
-# test duplicated seed data
+# -------- test no duplication of duties or coins ---------
 
-with open('seed_data/duplicated_data.json') as json_data:
-    duped_seed_data = json.load(json_data)
-    duped_coins = duped_seed_data['coins']
-    duped_duties = duped_seed_data['duties']
+def test_duty_with_same_number_not_allowed(full_database):
+    with pytest.raises(peewee.IntegrityError) as error:
+        Duty.insert(duty_number=1, description='Script and code').execute()
+    
+    db.rollback()
+    assert 'unique constraint' in str(error.value).lower()
 
-@pytest.fixture
-def duplicated_database():
-    with db:
-        db.create_tables([Coin, Duty, Coin.duties.get_through_model()])
-        Coin.insert_many(duped_coins).execute()
-        Duty.insert_many(duped_duties).execute()
+def test_coin_with_same_name_not_allowed(full_database):
+    Coin.insert(coin_name='New Coin').execute()
+    with pytest.raises(peewee.IntegrityError) as error:
+        Coin.insert(coin_name='Automate').execute()
         
-        yield
-        
-        db.drop_tables([Coin, Duty, Coin.duties.get_through_model()])
+    
+    db.rollback()
+    assert 'unique constraint' in str(error.value).lower()
 
-def test_dupe_coins_not_created(duplicated_database):
-    for coin in Coin.select():
-        print(coin.coin_name)
-    assert Coin.select().count() == 5
-
-def test_dupe_duties_not_created(duplicated_database):
-    assert Duty.select().count() == 13
-
-# note: do we need to update these tests to expect an error rather than the correct number of duties minue the duplicates? 
