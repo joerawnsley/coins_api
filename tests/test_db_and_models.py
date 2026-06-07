@@ -4,8 +4,8 @@ from src.utils import is_valid_uuid
 import pytest, json
 
 import logging
-logging.getLogger('peewee').addHandler(logging.StreamHandler())
-logging.getLogger('peewee').setLevel(logging.DEBUG)
+# logging.getLogger('peewee').addHandler(logging.StreamHandler())
+# logging.getLogger('peewee').setLevel(logging.DEBUG)
 
 # -------- connection test --------
 def test_connection():
@@ -125,26 +125,27 @@ def test_coin_has_completion_marker(full_database):
 # test duplicated seed data
 
 with open('seed_data/duplicated_data.json') as json_data:
-    seed_data = json.load(json_data)
-    all_coins = seed_data['coins']
-    all_duties = seed_data['duties']
+    duped_seed_data = json.load(json_data)
+    duped_coins = duped_seed_data['coins']
+    duped_duties = duped_seed_data['duties']
 
 @pytest.fixture
 def duplicated_database():
     with db:
         db.create_tables([Coin, Duty, Coin.duties.get_through_model()])
-        Coin.insert_many(all_coins).execute()
-        Duty.insert_many(all_duties).execute()
+        Coin.insert_many(duped_coins).execute()
+        Duty.insert_many(duped_duties).execute()
         
         yield
         
         db.drop_tables([Coin, Duty, Coin.duties.get_through_model()])
 
-def test_5_coins_exist(duplicated_database):
+def test_dupe_coins_not_created(duplicated_database):
     for coin in Coin.select():
         print(coin.coin_name)
     assert Coin.select().count() == 5
 
-def test_13_duties_exist(duplicated_database):
+def test_dupe_duties_not_created(duplicated_database):
     assert Duty.select().count() == 13
-        
+
+# note: do we need to update these tests to expect an error rather than the correct number of duties minue the duplicates? 
