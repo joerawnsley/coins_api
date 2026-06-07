@@ -102,8 +102,18 @@ def test_add_duty_to_coin(full_database):
     assert 8 in assemble_duties
     assert 7 not in assemble_duties
     
-# def test_add_two_duties_to_coin(full_database):
-#     houston = Coin.get(Coin.coin_name == "Houston, Prepare to Launch")
-#     duty_5 = Duty.get(Duty.duty_number == 5)
-#     duty_7 = Duty.get(Duty.duty_number == 7)
-#     duty_10 = Duty.get(Duty.duty_number == 10)
+def test_add_two_duties_to_coin(full_database):
+    houston = Coin.get(Coin.coin_name == "Houston, Prepare to Launch")
+    houston_duties = [duty.duty_number for duty in houston.duties]
+    assert len(houston_duties) == 0
+    
+    duty_5 = Duty.get(Duty.duty_number == 5)
+    duty_7 = Duty.get(Duty.duty_number == 7)
+    duty_10 = Duty.get(Duty.duty_number == 10)
+    houston.duties.add([duty_5, duty_7, duty_10])
+    
+    houston_duties = [duty.duty_number for duty in houston.duties]
+    print(houston_duties)
+    assert 5 in houston_duties; assert 7 in houston_duties; assert 10 in houston_duties
+    assert len(houston_duties) == 3
+    
