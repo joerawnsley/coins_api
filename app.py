@@ -9,4 +9,4 @@ def root():
 
 @app.get("/coins")
 def list_coins():
-    return []
+    return [1, 2, 3, 4, 5]
