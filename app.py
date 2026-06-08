@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from src.models import Coin
+from src.database import db
 
 app = FastAPI()
 
@@ -9,4 +11,5 @@ def root():
 
 @app.get("/coins")
 def list_coins():
-    return [1, 2, 3, 4, 5]
+    coin = Coin.select().first()
+    return [coin, 2, 3, 4, 5]
