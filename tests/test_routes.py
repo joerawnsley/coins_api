@@ -43,7 +43,12 @@ def full_database():
         db.drop_tables([Coin, Duty, Coin.duties.get_through_model()])
 
 
-def test_coins_route_returns_5_coins():
+def test_coins_route_returns_5_coins(full_database):
     response = client.get("/coins")
     coin_list = response.json()
     assert len(coin_list) == 5
+    
+def test_first_coin_is_instance_of_coin(full_database):
+    response = client.get("/coins")
+    first_coin = response.json()[0]
+    assert isinstance(first_coin, Coin)
