@@ -2,7 +2,7 @@ from app import app
 from fastapi.testclient import TestClient
 from src.database import db
 from src.utils import is_valid_uuid
-import pytest, json
+import pytest, json, peewee
 from src.models import Coin, Duty
 import os, logging
 
@@ -92,6 +92,20 @@ def test_data_types_in_coin(full_database):
     
 # -------- post /coins --------
 
-def test_add_coin_to_empty_db():
-    pass
+def test_add_coin_to_empty_db(empty_database):
+    
+    assert Coin.select().where(Coin.coin_path == 'deeper').first() is None
+
+    coin_data = {
+        "coin_name": "Going Deeper",
+        "coin_path": "deeper",
+        "duties": [11]
+    }
+    response = client.post("/coins", json=coin_data)
+    
+    assert response.status_code == 200
+    assert Coin.select().where(Coin.coin_path == 'deeper').first() is not None
+
+    
+    
 
