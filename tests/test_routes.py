@@ -3,6 +3,11 @@ from fastapi.testclient import TestClient
 from src.database import db
 import pytest, json
 from src.models import Coin, Duty
+import os, logging
+
+if os.getenv('DB_LOGGING') == 'on':
+    logging.getLogger('peewee').addHandler(logging.StreamHandler())
+    logging.getLogger('peewee').setLevel(logging.DEBUG)
 
 
 client = TestClient(app)

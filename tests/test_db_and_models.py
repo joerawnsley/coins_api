@@ -2,10 +2,11 @@ from src.database import db
 from src.models import Coin, Duty
 from src.utils import is_valid_uuid
 import pytest, json, peewee, os
-
 import logging
-logging.getLogger('peewee').addHandler(logging.StreamHandler())
-logging.getLogger('peewee').setLevel(logging.DEBUG)
+
+if os.getenv('DB_LOGGING') == 'on':
+    logging.getLogger('peewee').addHandler(logging.StreamHandler())
+    logging.getLogger('peewee').setLevel(logging.DEBUG)
 
 # -------- connection test --------
 def test_connection():
