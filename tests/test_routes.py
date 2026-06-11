@@ -57,7 +57,11 @@ def test_coins_route_returns_5_coins(full_database):
     coin_list = response.json()
     assert len(coin_list) == 5
     
-def test_first_coin_is_instance_of_coin(full_database):
+def test_first_coin_has_coin_name_and_id(full_database):
     response = client.get("/coins")
     first_coin = response.json()[0]
-    assert isinstance(first_coin, Coin)
+    print(first_coin)
+    assert 'coin_name' in first_coin
+    assert 'id' in first_coin
+    
+    
