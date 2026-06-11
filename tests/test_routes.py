@@ -1,6 +1,7 @@
 from app import app
 from fastapi.testclient import TestClient
 from src.database import db
+from src.utils import is_valid_uuid
 import pytest, json
 from src.models import Coin, Duty
 import os, logging
@@ -70,4 +71,13 @@ def test_all_coins_have_coin_name_and_id(full_database):
         assert 'coin_name' in coin
         assert 'id' in coin
 
+def test_data_types_in_coin(full_database):
+    response = client.get("/coins")
+    coin_3 = response.json()[3]
+    print(coin_3)
+    assert type(coin_3['coin_name'] == str)
+    assert is_valid_uuid(coin_3['id'])
+    assert type(coin_3['duties']) == list
+    assert type(coin_3['is_complete']) == bool
+    
     

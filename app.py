@@ -13,5 +13,7 @@ def root():
 def list_coins():
     query = Coin.select().dicts()
     coin_list = [coin for coin in query]
+    for coin in coin_list:
+        coin["duties"] = []
     return coin_list
 
