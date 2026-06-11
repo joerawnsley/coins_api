@@ -62,5 +62,12 @@ def test_first_coin_has_coin_name_and_id(full_database):
     first_coin = response.json()[0]
     assert 'coin_name' in first_coin
     assert 'id' in first_coin
-    
+
+def test_all_coins_have_coin_name_and_id(full_database):
+    response = client.get("/coins")
+    coin_list = response.json()
+    for coin in coin_list:
+        assert 'coin_name' in coin
+        assert 'id' in coin
+
     

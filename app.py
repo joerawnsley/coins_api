@@ -12,4 +12,4 @@ def root():
 @app.get("/coins")
 def list_coins():
     coin = Coin.select().dicts()[0]
-    return [coin, 2, 3, 4, 5]
+    return [coin, {}, {}, {}, {}]
