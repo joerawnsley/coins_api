@@ -16,12 +16,14 @@ client = TestClient(app)
 # --------------- test fixtures -----------------
 @pytest.fixture()
 def empty_database():
-    with db:
-        db.create_tables([Coin, Duty, Coin.duties.get_through_model()])
-        
-        yield
-        
-        db.drop_tables([Coin, Duty, Coin.duties.get_through_model()])
+    db.connect()
+    db.create_tables([Coin, Duty, Coin.duties.get_through_model()])
+    
+    yield
+    
+    db.drop_tables([Coin, Duty, Coin.duties.get_through_model()])
+    if not db.is_closed():
+        db.close()
 
 with open('seed_data/seed_data.json') as json_data:
     seed_data = json.load(json_data)
@@ -32,7 +34,6 @@ with open('seed_data/seed_data.json') as json_data:
 def full_database():
     
     db.connect()
-    
     db.create_tables([Coin, Duty, Coin.duties.get_through_model()])
     Coin.insert_many(all_coins).execute()
     Duty.insert_many(all_duties).execute()
@@ -92,14 +93,13 @@ def test_data_types_in_coin(full_database):
     
 # -------- post /coins --------
 
-def test_add_coin_to_empty_db(empty_database):
+def test_add_coin_with_no_duties_to_empty_db(empty_database):
     
     assert Coin.select().where(Coin.coin_path == 'deeper').first() is None
 
     coin_data = {
         "coin_name": "Going Deeper",
         "coin_path": "deeper",
-        "duties": [11]
     }
     response = client.post("/coins", json=coin_data)
     
@@ -107,5 +107,21 @@ def test_add_coin_to_empty_db(empty_database):
     assert Coin.select().where(Coin.coin_path == 'deeper').first() is not None
 
     
+def test_add_coin_with_duties_to_empty_db(empty_database):
     
+    assert Coin.select().where(Coin.coin_path == 'deeper').first() is None
 
+    coin_data = {
+        "coin_name": "Going Deeper",
+        "coin_path": "deeper",
+        "duties": ["11"]
+    }
+    response = client.post("/coins", json=coin_data)
+    
+    assert response.status_code == 200
+    assert Coin.select().where(Coin.coin_path == 'deeper').first() is not None
+    
+    new_coin = Coin.get(Coin.coin_path == "deeper")
+    new_coin_duties = [duty.duty_number for duty in new_coin.duties]
+    print(new_coin_duties)
+    assert new_coin_duties[0] == 11
