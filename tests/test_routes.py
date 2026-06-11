@@ -10,22 +10,18 @@ if os.getenv('DB_LOGGING') == 'on':
     logging.getLogger('peewee').addHandler(logging.StreamHandler())
     logging.getLogger('peewee').setLevel(logging.DEBUG)
 
-
+# ------------ create test client ----------------
 client = TestClient(app)
 
-# ----- basic routes -----
-
-def test_root_returns_message():
-    response = client.get("/")
-    assert response.status_code == 200
-    assert "Welcome" in response.text
-
-def test_root_returns_json_object():
-    response = client.get("/")
-    data = response.json()
-    assert isinstance(data, dict)
-
-# ----- test with full database -----
+# --------------- test fixtures -----------------
+@pytest.fixture()
+def empty_database():
+    with db:
+        db.create_tables([Coin, Duty, Coin.duties.get_through_model()])
+        
+        yield
+        
+        db.drop_tables([Coin, Duty, Coin.duties.get_through_model()])
 
 with open('seed_data/seed_data.json') as json_data:
     seed_data = json.load(json_data)
@@ -47,6 +43,20 @@ def full_database():
     
     if not db.is_closed():
         db.close()
+
+# ----- welcome endpoint -----
+
+def test_root_returns_message():
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "Welcome" in response.text
+
+def test_root_returns_json_object():
+    response = client.get("/")
+    data = response.json()
+    assert isinstance(data, dict)
+
+# ----- get /coins -----
 
 def test_coins_route_returns_a_list(full_database):
     response = client.get("/coins")
@@ -80,4 +90,8 @@ def test_data_types_in_coin(full_database):
     assert type(coin_3['duties']) == list
     assert type(coin_3['isComplete']) == bool
     
-    
+# -------- post /coins --------
+
+def test_add_coin_to_empty_db():
+    pass
+
