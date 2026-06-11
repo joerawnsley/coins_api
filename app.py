@@ -11,5 +11,7 @@ def root():
 
 @app.get("/coins")
 def list_coins():
-    coin = Coin.select().dicts()[0]
-    return [coin, {}, {}, {}, {}]
+    query = Coin.select().dicts()
+    coin_list = [coin for coin in query]
+    return coin_list
+
