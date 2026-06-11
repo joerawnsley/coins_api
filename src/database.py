@@ -11,9 +11,9 @@ remote_postgres_db = PostgresqlDatabase(
     password=os.getenv('DB_PASSWORD')
     )
 
-sqlite_db = SqliteDatabase(':memory:')
+sqlite_db = SqliteDatabase('local.db')
 
 if os.getenv('DB_LOCATION') == 'remote':
     db = remote_postgres_db
-if os.getenv('DB_LOCATION') == 'memory':
+if os.getenv('DB_LOCATION') == 'local':
     db = sqlite_db
