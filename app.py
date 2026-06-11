@@ -1,13 +1,29 @@
 from fastapi import FastAPI
 from src.models import Coin
 from src.database import db
+from pydantic import BaseModel
+
+
+
 
 app = FastAPI()
 
-
+# -----welcome endpoint-----
 @app.get("/")
 def root():
     return {"message": "Welcome to the Coins API"}
+
+# -----coin routes-----
+
+
+# placeholder for pydantic model for coin - update with correct fields
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+# placeholder for pydantic model for coin
 
 
 @app.get("/coins")
@@ -22,3 +38,33 @@ def list_coins():
         isComplete = coin.is_complete
     ))
     return coin_list
+
+@app.post("/coins")
+def add_coin():
+    pass
+
+@app.get("/coins/{coin_path}")
+def single_coin():
+    pass
+
+@app.put("/coins/{coin_path}")
+def update_coin():
+    pass
+
+# -----duties routes-----
+
+@app.get("/duties")
+def list_duties():
+    pass
+
+@app.get("/duties/{duty_number}")
+def single_duty():
+    pass
+
+@app.post("/duties")
+def add_duty():
+    pass
+
+@app.put("/duties/{duty_number}")
+def update_duty():
+    pass
