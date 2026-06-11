@@ -19,11 +19,6 @@ def test_root_returns_json_object():
     data = response.json()
     assert isinstance(data, dict)
 
-def test_coins_route_returns_a_list():
-    response = client.get("/coins")
-    data = response.json()
-    assert isinstance(data, list)
-
 # ----- test with full database -----
 
 with open('seed_data/seed_data.json') as json_data:
@@ -33,15 +28,24 @@ with open('seed_data/seed_data.json') as json_data:
     
 @pytest.fixture()
 def full_database():
-    with db:
-        db.create_tables([Coin, Duty, Coin.duties.get_through_model()])
-        Coin.insert_many(all_coins).execute()
-        Duty.insert_many(all_duties).execute()
-        
-        yield
-        
-        db.drop_tables([Coin, Duty, Coin.duties.get_through_model()])
+    
+    db.connect()
+    
+    db.create_tables([Coin, Duty, Coin.duties.get_through_model()])
+    Coin.insert_many(all_coins).execute()
+    Duty.insert_many(all_duties).execute()
+    
+    yield
+    
+    db.drop_tables([Coin, Duty, Coin.duties.get_through_model()])
+    
+    if not db.is_closed():
+        db.close()
 
+def test_coins_route_returns_a_list(full_database):
+    response = client.get("/coins")
+    data = response.json()
+    assert isinstance(data, list)
 
 def test_coins_route_returns_5_coins(full_database):
     response = client.get("/coins")
