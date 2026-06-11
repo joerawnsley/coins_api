@@ -61,23 +61,23 @@ def test_coins_route_returns_5_coins(full_database):
 def test_first_coin_has_coin_name_and_id(full_database):
     response = client.get("/coins")
     first_coin = response.json()[0]
-    assert 'coin_name' in first_coin
+    assert 'coinName' in first_coin
     assert 'id' in first_coin
 
 def test_all_coins_have_coin_name_and_id(full_database):
     response = client.get("/coins")
     coin_list = response.json()
     for coin in coin_list:
-        assert 'coin_name' in coin
+        assert 'coinName' in coin
         assert 'id' in coin
 
 def test_data_types_in_coin(full_database):
     response = client.get("/coins")
     coin_3 = response.json()[3]
     print(coin_3)
-    assert type(coin_3['coin_name'] == str)
+    assert type(coin_3['coinName'] == str)
     assert is_valid_uuid(coin_3['id'])
     assert type(coin_3['duties']) == list
-    assert type(coin_3['is_complete']) == bool
+    assert type(coin_3['isComplete']) == bool
     
     
