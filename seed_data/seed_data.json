@@ -1,19 +1,24 @@
 {
     "coins": [
         {
-            "coin_name": "Automate"
+            "coin_name": "Automate",
+            "coin_path": "automate"
         },
         {
-            "coin_name": "Houston, Prepare to Launch"
+            "coin_name": "Houston, Prepare to Launch",
+            "coin_path": "houston"
         },
         {
-            "coin_name": "Going Deeper"
+            "coin_name": "Going Deeper",
+            "coin_path": "deeper"
         },
         {
-            "coin_name": "Assemble"
+            "coin_name": "Assemble",
+            "coin_path": "assemble"
         },
         {
-            "coin_name": "Call Security"
+            "coin_name": "Call Security",
+            "coin_path": "security"
         }
     ],
     "duties": [

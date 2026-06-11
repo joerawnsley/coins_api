@@ -31,7 +31,7 @@ def test_coin_table_is_empty(empty_database):
     assert list(coins) == []
     
 def test_add_a_coin(empty_database):
-    Coin.insert(coin_name='Automate').execute()
+    Coin.insert(coin_name='Automate', coin_path='automate').execute()
     coin = Coin.select().first()
     assert is_valid_uuid(coin.id)
     assert coin.coin_name == 'Automate'
@@ -125,9 +125,11 @@ def test_duty_with_same_number_not_allowed(full_database):
     assert 'unique constraint' in str(error.value).lower()
 
 def test_coin_with_same_name_not_allowed(full_database):
-    Coin.insert(coin_name='New Coin').execute()
+    # should insert successfully
+    Coin.insert(coin_name='New Coin', coin_path='newcoin').execute()
     with pytest.raises(peewee.IntegrityError) as error:
-        Coin.insert(coin_name='Automate').execute()
+        # should raise an error
+        Coin.insert(coin_name='Automate', coin_path='automate').execute()
     
     if os.getenv('DB_LOCATION') == 'remote':
         db.rollback()
