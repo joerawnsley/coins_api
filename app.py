@@ -15,15 +15,11 @@ def root():
 
 # -----coin routes-----
 
-
-# placeholder for pydantic model for coin - update with correct fields
-
-class Item(BaseModel):
-    name: str
-    description: str | None = None
-    price: float
-    tax: float | None = None
-# placeholder for pydantic model for coin
+class NewCoin(BaseModel):
+    coin_name: str
+    coin_path: str
+    duties: list[int] | None = None
+    is_complete: bool | None = None
 
 
 @app.get("/coins")
@@ -40,8 +36,11 @@ def list_coins():
     return coin_list
 
 @app.post("/coins")
-def add_coin():
-    pass
+def add_coin(coin: NewCoin):
+    Coin.create(
+        coin_name=coin.coin_name,
+        coin_path=coin.coin_path
+    )
 
 @app.get("/coins/{coin_path}")
 def single_coin():
