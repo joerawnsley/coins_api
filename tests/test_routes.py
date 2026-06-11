@@ -45,6 +45,20 @@ def full_database():
     if not db.is_closed():
         db.close()
 
+@pytest.fixture()
+def db_with_duties_but_no_coins():
+    
+    db.connect()
+    db.create_tables([Coin, Duty, Coin.duties.get_through_model()])
+    Duty.insert_many(all_duties).execute()
+    
+    yield
+    
+    db.drop_tables([Coin, Duty, Coin.duties.get_through_model()])
+    
+    if not db.is_closed():
+        db.close()
+
 # ----- welcome endpoint -----
 
 def test_root_returns_message():
@@ -107,14 +121,14 @@ def test_add_coin_with_no_duties_to_empty_db(empty_database):
     assert Coin.select().where(Coin.coin_path == 'deeper').first() is not None
 
     
-def test_add_coin_with_duties_to_empty_db(empty_database):
+def test_add_coin_with_duties(db_with_duties_but_no_coins):
     
     assert Coin.select().where(Coin.coin_path == 'deeper').first() is None
 
     coin_data = {
         "coin_name": "Going Deeper",
         "coin_path": "deeper",
-        "duties": ["11"]
+        "duties": ["11", "12"]
     }
     response = client.post("/coins", json=coin_data)
     
@@ -125,3 +139,4 @@ def test_add_coin_with_duties_to_empty_db(empty_database):
     new_coin_duties = [duty.duty_number for duty in new_coin.duties]
     print(new_coin_duties)
     assert new_coin_duties[0] == 11
+    assert len(new_coin_duties) == 2
