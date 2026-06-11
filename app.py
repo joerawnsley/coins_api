@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from src.models import Coin
+from src.models import Coin, Duty
 from src.database import db
 from pydantic import BaseModel
 
@@ -41,6 +41,10 @@ def add_coin(coin: NewCoin):
         coin_name=coin.coin_name,
         coin_path=coin.coin_path
     )
+    if coin.duties:
+        saved_coin = Coin.get(Coin.coin_name == coin.coin_name)
+        for number in coin.duties:
+            saved_coin.duties.add(Duty.get(Duty.duty_number == int(number)))
 
 @app.get("/coins/{coin_path}")
 def single_coin():
