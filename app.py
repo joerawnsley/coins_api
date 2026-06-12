@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from src.models import Coin, Duty
 from src.database import db
+from src.utils import coin_to_dict
 from pydantic import BaseModel
 
 
@@ -27,12 +28,7 @@ def list_coins():
     query = Coin.select()
     coin_list = []
     for coin in query:
-        coin_list.append(dict(
-        id = coin.id,
-        coinName = coin.coin_name,
-        duties = [duty.duty_number for duty in coin.duties],
-        isComplete = coin.is_complete
-    ))
+        coin_list.append(coin_to_dict(coin))
     return coin_list
 
 @app.post("/coins")
@@ -49,19 +45,7 @@ def add_coin(coin: NewCoin):
 @app.get("/coins/{coin_path}")
 def single_coin(coin_path):
     selected_coin = Coin.get(Coin.coin_path == coin_path)
-    return dict(
-        id = selected_coin.id,
-        coinName = selected_coin.coin_name,
-        duties = [duty.duty_number for duty in selected_coin.duties],
-        isComplete = selected_coin.is_complete
-    )
-    
-    
-    # print("hello from router", selected_coin.coin_name)
-    # for duty in selected_coin.duties:
-    #     print("hi", duty.duty_number)
-    # print(selected_coin.__data__)
-    # return selected_coin.__data__
+    return coin_to_dict(selected_coin)
 
 @app.put("/coins/{coin_path}")
 def update_coin():
