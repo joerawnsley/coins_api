@@ -47,8 +47,21 @@ def add_coin(coin: NewCoin):
             saved_coin.duties.add(Duty.get(Duty.duty_number == int(number)))
 
 @app.get("/coins/{coin_path}")
-def single_coin():
-    pass
+def single_coin(coin_path):
+    selected_coin = Coin.get(Coin.coin_path == coin_path)
+    return dict(
+        id = selected_coin.id,
+        coinName = selected_coin.coin_name,
+        duties = [duty.duty_number for duty in selected_coin.duties],
+        isComplete = selected_coin.is_complete
+    )
+    
+    
+    # print("hello from router", selected_coin.coin_name)
+    # for duty in selected_coin.duties:
+    #     print("hi", duty.duty_number)
+    # print(selected_coin.__data__)
+    # return selected_coin.__data__
 
 @app.put("/coins/{coin_path}")
 def update_coin():
