@@ -140,3 +140,19 @@ def test_add_coin_with_duties(db_with_duties_but_no_coins):
     print(new_coin_duties)
     assert new_coin_duties[0] == 11
     assert len(new_coin_duties) == 2
+
+
+def test_coin_detail_page_gets_a_single_coin(full_database):
+    
+    assemble_coin = Coin.get(Coin.coin_path == 'assemble')
+    duty_8 = Duty.get(Duty.duty_number == 8)
+    assemble_coin.duties.add(duty_8)
+    print(assemble_coin.coin_name, assemble_coin.duties.first().duty_number)
+    
+    response = client.get("/coins/assemble")
+    data = response.json()
+    print(data)
+    
+    assert type(data) == dict
+    assert data["coinName"] == "Assemble"
+    assert data["duties"][0] == 8
