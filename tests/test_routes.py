@@ -136,7 +136,7 @@ def test_add_coin_with_duties(db_with_duties_but_no_coins):
     assert Coin.select().where(Coin.coin_path == 'deeper').first() is not None
     
     new_coin = Coin.get(Coin.coin_path == "deeper")
-    new_coin_duties = [duty.duty_number for duty in new_coin.duties]
+    new_coin_duties = [duty.duty_number for duty in new_coin.duties.order_by(Duty.duty_number)]
     print(new_coin_duties)
     assert new_coin_duties[0] == 11
     assert len(new_coin_duties) == 2
