@@ -16,9 +16,6 @@ env:
 jobs:
     test:
         runs-on: ubuntu-latest
-        env:
-          FLASK_APP: app.py
-
         steps:
           - name: Checkout
             uses: actions/checkout@v5
@@ -29,28 +26,28 @@ jobs:
           - name: Run tests
             run:  python3 -m pytest
 
-    # deploy:
-    #    runs-on: ubuntu-latest
-    #    needs: test
-    #    steps:
-    #       - name: Checkout
-    #         uses: actions/checkout@v5
+    deploy:
+       runs-on: ubuntu-latest
+       needs: test
+       steps:
+          - name: Checkout
+            uses: actions/checkout@v5
 
-    #       - name: Configure AWS credentials
-    #         uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
-    #         with:
-    #           role-to-assume: arn:aws:iam::261219435789:role/github-actions-jbr
-    #           aws-region: eu-west-2
+          - name: Configure AWS credentials
+            uses: aws-actions/configure-aws-credentials@0e613a0980cbf65ed5b322eb7a1e075d28913a83
+            with:
+              role-to-assume: arn:aws:iam::261219435789:role/github-jbr
+              aws-region: eu-west-2
 
-    #       - name: Get Caller Identity
-    #         run: aws sts get-caller-identity
+          - name: Get Caller Identity
+            run: aws sts get-caller-identity
         
-    #       - name: Login to Amazon ECR
-    #         id: login-ecr
-    #         uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
+          - name: Login to Amazon ECR
+            id: login-ecr
+            uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
             
-    #       - name: Build, tag, and push docker image to Amazon ECR
-    #         run: |
-    #            docker build -t duties-app .
-    #            docker tag duties-app:latest 261219435789.dkr.ecr.eu-west-2.amazonaws.com/jbr/duties-app
-    #            docker push 261219435789.dkr.ecr.eu-west-2.amazonaws.com/jbr/duties-app
+          - name: Build, tag, and push docker image to Amazon ECR
+            run: |
+               docker build -t coins-api .
+               docker tag jbr/coins-api:latest 261219435789.dkr.ecr.eu-west-2.amazonaws.com/jbr/coins-api:latest
+               docker push 261219435789.dkr.ecr.eu-west-2.amazonaws.com/jbr/coins-api:latest
