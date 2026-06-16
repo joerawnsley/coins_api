@@ -12,6 +12,9 @@ env:
   DB_LOCATION: local
   REMOTE_SCHEMA: dev
   DB_LOGGING: off
+#   this will work for test but not deploy. Need to figure out how to set different env vars for the deploy. And how to put the secrets (db/name and password) somewhere secret - pass in from Github secrets or from AWS secret manager
+
+# also dockerfile should set up virtual environment
 
 jobs:
     test:
@@ -48,6 +51,6 @@ jobs:
             
           - name: Build, tag, and push docker image to Amazon ECR
             run: |
-               docker build -t coins-api .
+               docker build -t jbr/coins-api .
                docker tag jbr/coins-api:latest 261219435789.dkr.ecr.eu-west-2.amazonaws.com/jbr/coins-api:latest
                docker push 261219435789.dkr.ecr.eu-west-2.amazonaws.com/jbr/coins-api:latest
