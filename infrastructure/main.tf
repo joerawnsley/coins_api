@@ -59,3 +59,113 @@ output "github_actions_role_arn" {
   value       = aws_iam_role.github_actions_ecr_role.arn
   description = "ARN of the IAM role for GitHub Actions to assume."
 }
+
+# --------------------security------------------
+# VPC & subnets
+resource "aws_vpc" "main" {
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_hostnames = true
+  tags = { Name = "jbr-vpc" }
+}
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.main.id
+  tags   = { Name = "jbr-ecs-igw" }
+}
+resource "aws_subnet" "public_a" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "eu-west-2a"
+  map_public_ip_on_launch = true
+  tags                    = { Name = "jbr-subnet-public-a" }
+}
+
+resource "aws_subnet" "public_b" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.2.0/24"
+  availability_zone       = "eu-west-2b"
+  map_public_ip_on_launch = true
+  tags                    = { Name = "jbr-subnet-public-b" }
+}
+
+# route Table
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.gw.id
+  }
+}
+
+resource "aws_route_table_association" "a" {
+  subnet_id      = aws_subnet.public_a.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "b" {
+  subnet_id      = aws_subnet.public_b.id
+  route_table_id = aws_route_table.public.id
+}
+
+# security group
+resource "aws_security_group" "ecs_tasks" {
+  name        = "jbr-ecs-tasks-sec-group"
+  description = "allow inbound access on port 80"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    protocol    = "tcp"
+    from_port   = 8000
+    to_port     = 8000
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# ----------------ECS Deployment--------------------
+# cluster
+resource "aws_ecs_cluster" "main" {
+  name = "jbr-cluster"
+}
+
+
+# task definition
+resource "aws_ecs_task_definition" "app" {
+  family                   = "jbr-coins-api"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = "256"
+  memory                   = "512"
+
+  container_definitions = jsonencode([{
+    name      = "coins-api-server"
+    image     = "python:3.11-slim" 
+    command   = ["python", "-m", "http.server", "8000"] 
+    essential = true
+    portMappings = [{
+      containerPort = 8000
+      hostPort      = 8000
+    }]
+  }])
+}
+
+# service
+resource "aws_ecs_service" "main" {
+  name            = "jbr-ecs-service"
+  cluster         = aws_ecs_cluster.main.id
+  task_definition = aws_ecs_task_definition.app.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    security_groups  = [aws_security_group.ecs_tasks.id]
+    subnets          = [aws_subnet.public_a.id, aws_subnet.public_b.id]
+    assign_public_ip = true
+  }
+}
