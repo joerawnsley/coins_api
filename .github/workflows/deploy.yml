@@ -51,6 +51,6 @@ jobs:
             
           - name: Build, tag, and push docker image to Amazon ECR
             run: |
-               docker build -t jbr/coins-api .
-               docker tag jbr/coins-api:latest 261219435789.dkr.ecr.eu-west-2.amazonaws.com/jbr/coins-api:latest
-               docker push 261219435789.dkr.ecr.eu-west-2.amazonaws.com/jbr/coins-api:latest
+               docker build -t jbr-coins-api .
+               docker tag jbr-coins-api:latest 261219435789.dkr.ecr.eu-west-2.amazonaws.com/jbr-coins-api:latest
+               docker push 261219435789.dkr.ecr.eu-west-2.amazonaws.com/jbr-coins-api:latest
