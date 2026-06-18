@@ -45,12 +45,12 @@ resource "aws_iam_role" "github_actions_role" {
 
 # Attach policy to the role
 resource "aws_iam_role_policy_attachment" "attach_ecr_power_user" {
-  role       = aws_iam_role.github_actions_ecr_role.name
+  role       = aws_iam_role.github_actions_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
 }
 
 resource "aws_iam_role_policy_attachment" "attach_ecs_full_access" {
-  role       = aws_iam_role.github_actions_ecr_role.name
+  role       = aws_iam_role.github_actions_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonECS_FullAccess"
 }
 
@@ -61,7 +61,7 @@ output "ecr_repository_url" {
 }
 
 output "github_actions_role_arn" {
-  value       = aws_iam_role.github_actions_ecr_role.arn
+  value       = aws_iam_role.github_actions_role.arn
   description = "ARN of the IAM role for GitHub Actions to assume."
 }
 
