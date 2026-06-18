@@ -67,7 +67,7 @@ jobs:
                 DB_LOCATION=remote
                 REMOTE_SCHEMA=prod
                 DB_LOGGING=off
-              secret-environment-variables: |
+              secrets: |
                 DB_HOST=${{ secrets.DB_HOST }}
                 DB_PASSWORD=${{ secrets.DB_PASSWORD }}
 
