@@ -61,7 +61,7 @@ jobs:
             id: task-def
             uses: aws-actions/amazon-ecs-render-task-definition@v1
             with:
-              task-definition: .github/workflows/task-definition.json
+              task-definition: .github/workflows/ecs_task.json
               container-name: coins-api-server
               #image: #$#{{ steps.build-image.outputs.image }}
               image: jbr-coins-api:latest
