@@ -1,6 +1,8 @@
 {
   "family": "jbr-coins-api",
   "executionRoleArn": "arn:aws:iam::261219435789:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::261219435789:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
   "containerDefinitions": [
     {
       "name": "coins-api-server",
@@ -12,5 +14,8 @@
         }
       ]
     }
-  ]
+  ],
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512"
 }
