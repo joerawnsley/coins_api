@@ -38,8 +38,8 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
 }
 
 # Create IAM Role
-resource "aws_iam_role" "github_actions_ecr_role" {
-  name               = "github-actions-ecr-push-jbr"
+resource "aws_iam_role" "github_actions_role" {
+  name               = "github-actions-jbr"
   assume_role_policy = data.aws_iam_policy_document.github_actions_assume_role.json
 }
 
@@ -47,6 +47,11 @@ resource "aws_iam_role" "github_actions_ecr_role" {
 resource "aws_iam_role_policy_attachment" "attach_ecr_power_user" {
   role       = aws_iam_role.github_actions_ecr_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
+}
+
+resource "aws_iam_role_policy_attachment" "attach_ecs_full_access" {
+  role       = aws_iam_role.github_actions_ecr_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonECS_FullAccess"
 }
 
 # outputs
