@@ -1,0 +1,15 @@
+{
+  "family": "jbr-coins-api",
+  "containerDefinitions": [
+    {
+      "name": "coins-api-server",
+      "image": "jbr-coins-api:latest",
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "hostPort": 8000
+        }
+      ]
+    }
+  ]
+}

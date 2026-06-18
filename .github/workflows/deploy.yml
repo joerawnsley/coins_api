@@ -54,3 +54,22 @@ jobs:
                docker build -t jbr-coins-api .
                docker tag jbr-coins-api:latest 261219435789.dkr.ecr.eu-west-2.amazonaws.com/jbr-coins-api:latest
                docker push 261219435789.dkr.ecr.eu-west-2.amazonaws.com/jbr-coins-api:latest
+               echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          
+          - name: Render Amazon ECS task definition
+            id: task-def
+            uses: aws-actions/amazon-ecs-render-task-definition@v1
+            with:
+              task-definition: .github/workflows/task-definition.json
+              container-name: coins-api-server
+              image: ${{ steps.login-ecr.outputs.image }}
+              # environment-variables: "LOG_LEVEL=info"
+              # secrets: "SECRET_KEY=arn:aws:ssm:region:0123456789:parameter/secret"
+
+          - name: Deploy to Amazon ECS service
+            uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+            with:
+              task-definition: ${{ steps.task-def.outputs.task-definition }}
+              service: jbr-ecs-service
+              cluster: jbr-cluster
+              wait-for-service-stability: true
