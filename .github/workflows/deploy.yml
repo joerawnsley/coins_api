@@ -63,8 +63,13 @@ jobs:
               task-definition: .github/workflows/task-definition.json
               container-name: coins-api-server
               image: ${{ steps.login-ecr.outputs.image }}
-              # environment-variables: "LOG_LEVEL=info"
-              # secrets: "SECRET_KEY=arn:aws:ssm:region:0123456789:parameter/secret"
+              environment-variables: |
+                DB_LOCATION=remote
+                REMOTE_SCHEMA=prod
+                DB_LOGGING=off
+              secret-environment-variables: |
+                DB_HOST=${{ secrets.DB_HOST }}
+                DB_PASSWORD=${{ secrets.DB_PASSWORD }}
 
           - name: Deploy to Amazon ECS service
             uses: aws-actions/amazon-ecs-deploy-task-definition@v2
