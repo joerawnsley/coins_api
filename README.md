@@ -1,3 +1,5 @@
+Placeholder
+
 Variables to include in .env:
 
 - DB_HOST=[your Digital Ocean connection string]
