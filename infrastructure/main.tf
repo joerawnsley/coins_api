@@ -67,10 +67,10 @@ resource "aws_iam_role_policy_attachment" "attach_ecr_power_user" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
 }
 
-# resource "aws_iam_role_policy_attachment" "attach_ecs_full_access" {
-#   role       = aws_iam_role.github_actions_role.name
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonECS_FullAccess"
-# }
+resource "aws_iam_role_policy_attachment" "attach_ecs_full_access" {
+  role       = aws_iam_role.github_actions_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonECS_FullAccess"
+}
 
 resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
   role       = aws_iam_role.ecs_role.name
