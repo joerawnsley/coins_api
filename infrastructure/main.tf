@@ -72,7 +72,7 @@ resource "aws_iam_role_policy_attachment" "attach_ecr_power_user" {
 #   policy_arn = "arn:aws:iam::aws:policy/AmazonECS_FullAccess"
 # }
 
-resource "aws_iam_role_policy_attachment" "ecs_full_access" {
+resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
   role       = aws_iam_role.ecs_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
