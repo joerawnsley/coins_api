@@ -55,7 +55,6 @@ jobs:
                docker build -t jbr-coins-api .
                docker tag jbr-coins-api:latest 261219435789.dkr.ecr.eu-west-2.amazonaws.com/jbr-coins-api:latest
                docker push 261219435789.dkr.ecr.eu-west-2.amazonaws.com/jbr-coins-api:latest
-              #  echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
           
           - name: Render Amazon ECS task definition
             id: task-def
@@ -63,7 +62,6 @@ jobs:
             with:
               task-definition: .github/workflows/ecs_task.json
               container-name: coins-api-server
-              #image: #$#{{ steps.build-image.outputs.image }}
               image: jbr-coins-api:latest
               environment-variables: |
                 DB_LOCATION=remote
