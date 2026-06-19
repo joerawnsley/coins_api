@@ -62,12 +62,11 @@ jobs:
             with:
               task-definition: .github/workflows/ecs_task.json
               container-name: coins-api-server
-              image: jbr-coins-api:latest
+              image: 261219435789.dkr.ecr.eu-west-2.amazonaws.com/jbr-coins-api:latest
               environment-variables: |
                 DB_LOCATION=remote
                 REMOTE_SCHEMA=prod
                 DB_LOGGING=off
-              secrets: |
                 DB_HOST=${{ secrets.DB_HOST }}
                 DB_PASSWORD=${{ secrets.DB_PASSWORD }}
 
