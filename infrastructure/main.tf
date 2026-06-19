@@ -14,7 +14,7 @@ resource "aws_ecr_repository" "app_repo" {
 }
 
 
-# Define the Trust Policy
+# Define Trust Policies
 data "aws_iam_policy_document" "github_actions_assume_role" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -38,13 +38,30 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
   }
 }
 
-# Create IAM Role
+data "aws_iam_policy_document" "ecs_trust_policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    effect  = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
+  }
+}
+
+# Create IAM Roles
 resource "aws_iam_role" "github_actions_role" {
   name               = "github-actions-jbr"
   assume_role_policy = data.aws_iam_policy_document.github_actions_assume_role.json
 }
 
-# Attach policy to the role
+resource "aws_iam_role" "ecs_role" {
+  name               = "ecs-role-jbr"
+  assume_role_policy = data.aws_iam_policy_document.ecs_trust_policy.json
+}
+
+# Attach policies to the roles
 resource "aws_iam_role_policy_attachment" "attach_ecr_power_user" {
   role       = aws_iam_role.github_actions_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
@@ -53,6 +70,16 @@ resource "aws_iam_role_policy_attachment" "attach_ecr_power_user" {
 resource "aws_iam_role_policy_attachment" "attach_ecs_full_access" {
   role       = aws_iam_role.github_actions_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonECS_FullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_full_access" {
+  role       = aws_iam_role.ecs_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonECS_FullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_full_access" {
+  role       = aws_iam_role.ecs_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMFullAccess"
 }
 
 # outputs
@@ -148,6 +175,8 @@ resource "aws_ecs_task_definition" "app" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = "256"
   memory                   = "512"
+  execution_role_arn       = aws_iam_role.ecs_role.arn
+  task_role_arn            = aws_iam_role.ecs_role.arn
 
   container_definitions = jsonencode([{
     name      = "coins-api-server"
