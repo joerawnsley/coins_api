@@ -167,3 +167,17 @@ def test_add_coin_returns_201(db_with_duties_but_no_coins):
     response = client.post("/coins", json=coin_data)
     
     assert response.status_code == 201
+    
+# duties routes
+
+def test_duties_route_returns_12_duties(full_database):
+    response = client.get("/duties")
+    duty_list = response.json()
+    assert len(duty_list) == 13
+
+def test_all_duties_have_number_and_description(full_database):
+    response = client.get("/duties")
+    duty_list = response.json()
+    for duty in duty_list:
+        assert 'dutyNumber' in duty
+        assert 'description' in duty

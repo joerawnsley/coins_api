@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from src.models import Coin, Duty
 from src.database import db
-from src.utils import coin_to_dict
+from src.utils import coin_to_dict, duty_to_dict
 from pydantic import BaseModel
 
 
@@ -56,13 +56,26 @@ def delete_coin():
     # awaiting implementation
     pass
 
-# need delete route as well
+# for adding and removing duties from coins
+@app.put("/add_duty/{coin_path}/{duty_number}")
+def add_duty_to_coin():
+    # awaiting implementation
+    pass
+
+@app.put("/remove_duty/{coin_path}/{duty_number}")
+def remove_duty_from_coin():
+    # awaiting implementation
+    pass
 
 # -----duties routes-----
 
 @app.get("/duties")
 def list_duties():
-    pass
+    query = Duty.select()
+    duty_list = []
+    for duty in query:
+        duty_list.append(duty_to_dict(duty))
+    return duty_list
 
 @app.get("/duties/{duty_number}")
 def single_duty():

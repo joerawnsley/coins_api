@@ -14,3 +14,10 @@ def coin_to_dict(coin):
         duties = [duty.duty_number for duty in coin.duties],
         isComplete = coin.is_complete
     )
+
+def duty_to_dict(duty):
+    return dict(
+        id = duty.id,
+        dutyNumber = duty.duty_number,
+        description = duty.description
+    )
