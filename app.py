@@ -51,6 +51,8 @@ def single_coin(coin_path):
 def update_coin():
     pass
 
+# need delete route as well
+
 # -----duties routes-----
 
 @app.get("/duties")
@@ -68,3 +70,5 @@ def add_duty():
 @app.put("/duties/{duty_number}")
 def update_duty():
     pass
+
+# need delete route as well
