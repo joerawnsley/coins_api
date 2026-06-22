@@ -1,4 +1,4 @@
-from app import app
+from src.app import app
 from fastapi.testclient import TestClient
 from src.database import db
 from src.utils import is_valid_uuid
