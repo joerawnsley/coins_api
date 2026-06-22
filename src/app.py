@@ -51,8 +51,9 @@ def single_coin(coin_path):
     selected_coin = Coin.get(Coin.coin_path == coin_path)
     return coin_to_dict(selected_coin)
 
-@app.put("/coins/{coin_path}")
-def update_coin():
+@app.delete("/coins/{coin_path}")
+def delete_coin():
+    # awaiting implementation
     pass
 
 # need delete route as well
@@ -75,4 +76,7 @@ def add_duty():
 def update_duty():
     pass
 
-# need delete route as well
+@app.delete("/coins/{coin_path}")
+def delete_coin():
+    # awaiting implementation
+    pass
