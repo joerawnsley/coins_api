@@ -54,12 +54,22 @@ def delete_coin():
     pass
 
 # for adding and removing duties from coins
-@app.put("/add_duty/{coin_path}/{duty_number}")
+@app.put("/coins/{coin_path}/add-duties")
 def add_duty_to_coin():
     # awaiting implementation
     pass
 
-@app.put("/remove_duty/{coin_path}/{duty_number}")
+@app.put("/coins/{coin_path}/remove-duties")
+def remove_duty_from_coin():
+    # awaiting implementation
+    pass
+
+@app.put("/coins/{coin_path}/mark-complete")
+def remove_duty_from_coin():
+    # awaiting implementation
+    pass
+
+@app.put("/coins/{coin_path}/mark-incomplete")
 def remove_duty_from_coin():
     # awaiting implementation
     pass
