@@ -56,10 +56,22 @@ The app uses port 8000. To start a local server, run:
 
 ```fastapi dev src/app.py```
 
- ## Deployment
+## Deployment
 
  <!-- placeholder for deployment instructions -->
 
-  ## Calling the API
+### Getting the public IP
+  
+in the project root, run the folowing commands in the terminal:
+```
+chmod +x get-public-ip.sh
+```
+then
+```
+./get-public-ip.sh
+```
+The public IP should appear in your terminal
+
+## Calling the API
 
  <!-- placeholder for usage instructions -->
