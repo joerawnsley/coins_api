@@ -33,5 +33,5 @@ PUBLIC_IP=$(aws ec2 describe-network-interfaces \
 echo ""
 echo "=================================================="
 echo "Deployed Public IP:"
-echo "$PUBLIC_IP:$PORT"
+echo "http://$PUBLIC_IP:$PORT"
 echo "=================================================="
