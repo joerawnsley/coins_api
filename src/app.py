@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from models import Coin, Duty
-from database import db
-from utils import coin_to_dict
+from src.models import Coin, Duty
+from src.database import db
+from src.utils import coin_to_dict
 from pydantic import BaseModel
 
 

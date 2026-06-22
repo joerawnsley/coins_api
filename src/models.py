@@ -1,5 +1,5 @@
 from peewee import *
-from database import db
+from src.database import db
 import os, dotenv, uuid
 
 dotenv.load_dotenv()
