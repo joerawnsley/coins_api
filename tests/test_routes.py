@@ -117,7 +117,7 @@ def test_add_coin_with_no_duties_to_empty_db(empty_database):
     }
     response = client.post("/coins", json=coin_data)
     
-    assert response.status_code == 200
+    assert response.status_code == 201
     assert Coin.select().where(Coin.coin_path == 'deeper').first() is not None
 
     
@@ -132,7 +132,7 @@ def test_add_coin_with_duties(db_with_duties_but_no_coins):
     }
     response = client.post("/coins", json=coin_data)
     
-    assert response.status_code == 200
+    assert response.status_code == 201
     assert Coin.select().where(Coin.coin_path == 'deeper').first() is not None
     
     new_coin = Coin.get(Coin.coin_path == "deeper")
@@ -156,3 +156,14 @@ def test_coin_detail_page_gets_a_single_coin(full_database):
     assert type(data) == dict
     assert data["coinName"] == "Assemble"
     assert data["duties"][0] == 8
+    
+def test_add_coin_returns_201(db_with_duties_but_no_coins):
+    
+    coin_data = {
+        "coin_name": "Going Deeper",
+        "coin_path": "deeper",
+        "duties": ["11", "12"]
+    }
+    response = client.post("/coins", json=coin_data)
+    
+    assert response.status_code == 201

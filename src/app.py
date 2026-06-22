@@ -31,7 +31,7 @@ def list_coins():
         coin_list.append(coin_to_dict(coin))
     return coin_list
 
-@app.post("/coins")
+@app.post("/coins", status_code=201)
 def add_coin(coin: NewCoin):
     Coin.create(
         coin_name=coin.coin_name,
@@ -41,6 +41,10 @@ def add_coin(coin: NewCoin):
         saved_coin = Coin.get(Coin.coin_name == coin.coin_name)
         for number in coin.duties:
             saved_coin.duties.add(Duty.get(Duty.duty_number == int(number)))
+    
+    created_coin = Coin.get(Coin.coin_path == coin.coin_path)
+    return coin_to_dict(created_coin)
+    
 
 @app.get("/coins/{coin_path}")
 def single_coin(coin_path):
