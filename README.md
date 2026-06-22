@@ -54,7 +54,7 @@ If you want to add some coins and duties to the database in order to test manual
 
 The app uses port 8000. To start a local server, run:
 
-```fastapi dev```
+```fastapi dev src/app.py```
 
  ## Deployment
 
