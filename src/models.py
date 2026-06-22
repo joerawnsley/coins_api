@@ -1,16 +1,16 @@
 from peewee import *
-from src.database import db
+from database import db
 import os, dotenv, uuid
 
 dotenv.load_dotenv()
 
-dev_schema = 'coins-dev'
+test_schema = 'coins-dev'
 prod_schema = 'coins-prod'
 
 if os.getenv('REMOTE_SCHEMA') == 'prod':
     current_schema = prod_schema
-if os.getenv('REMOTE_SCHEMA') == 'dev':
-    current_schema = dev_schema
+if os.getenv('REMOTE_SCHEMA') == 'test':
+    current_schema = test_schema
 
 class BaseModel(Model):
     class Meta:
