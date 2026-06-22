@@ -4,9 +4,6 @@ from src.database import db
 from src.utils import coin_to_dict, duty_to_dict
 from pydantic import BaseModel
 
-
-
-
 app = FastAPI()
 
 # -----welcome endpoint-----
