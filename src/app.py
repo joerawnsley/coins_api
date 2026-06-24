@@ -63,9 +63,11 @@ def add_duty_to_coin(coin_path, duties: list[int]):
 
 
 @app.put("/coins/{coin_path}/remove-duties")
-def remove_duty_from_coin():
-    # awaiting implementation
-    pass
+def remove_duty_from_coin(coin_path, duties: list[int]):
+    selected_coin = Coin.get(Coin.coin_path == coin_path)
+    for number in duties:
+        selected_coin.duties.remove(Duty.get(Duty.duty_number == number))
+    return coin_to_dict(selected_coin)
 
 @app.put("/coins/{coin_path}/mark-complete")
 def mark_coin_complete():

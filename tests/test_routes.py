@@ -164,7 +164,7 @@ def test_add_coin_returns_201(db_with_duties_but_no_coins):
     
     assert response.status_code == 201
     
-# add duties to coin
+# /put coins/ add-duties or remove-duties 
 def test_add_duty_to_coin(full_database):
     
     automate_coin = Coin.get(Coin.coin_path == 'automate')
@@ -178,6 +178,23 @@ def test_add_duty_to_coin(full_database):
     automate_coin = Coin.get(Coin.coin_path == 'automate')
     automate_duties = set([duty.duty_number for duty in automate_coin.duties])
     assert automate_duties == set([1, 2, 3])
+    
+def test_remove_duties_from_coin(full_database):
+    houston = Coin.get(Coin.coin_name == "Houston, Prepare to Launch")
+    duty_5 = Duty.get(Duty.duty_number == 5)
+    duty_7 = Duty.get(Duty.duty_number == 7)
+    duty_10 = Duty.get(Duty.duty_number == 10)
+    houston.duties.add([duty_5, duty_7, duty_10])
+    houston_duties = set([duty.duty_number for duty in houston.duties])
+    assert houston_duties == set([5, 7, 10])
+    
+    client.put(
+        "/coins/houston/remove-duties", 
+        json = [5, 7])
+    
+    houston = Coin.get(Coin.coin_name == "Houston, Prepare to Launch")
+    houston_duties = set([duty.duty_number for duty in houston.duties])
+    assert houston_duties == set([10])
     
     
 # duties routes
