@@ -70,14 +70,18 @@ def remove_duty_from_coin(coin_path, duties: list[int]):
     return coin_to_dict(selected_coin)
 
 @app.put("/coins/{coin_path}/mark-complete")
-def mark_coin_complete():
-    # awaiting implementation
-    pass
+def mark_coin_complete(coin_path):
+    selected_coin = Coin.get(Coin.coin_path == coin_path)
+    selected_coin.update(is_complete=True).execute()
+    updated_coin = Coin.get(Coin.coin_path == coin_path)
+    return coin_to_dict(updated_coin)
 
 @app.put("/coins/{coin_path}/mark-incomplete")
-def mark_coin_incomplete():
-    # awaiting implementation
-    pass
+def mark_coin_incomplete(coin_path):
+    selected_coin = Coin.get(Coin.coin_path == coin_path)
+    selected_coin.update(is_complete=False).execute()
+    updated_coin = Coin.get(Coin.coin_path == coin_path)
+    return coin_to_dict(updated_coin)
 
 # -----duties routes-----
 

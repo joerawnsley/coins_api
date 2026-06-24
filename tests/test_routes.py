@@ -164,7 +164,7 @@ def test_add_coin_returns_201(db_with_duties_but_no_coins):
     
     assert response.status_code == 201
     
-# /put coins/ add-duties or remove-duties 
+# PUT routes for /coins
 def test_add_duty_to_coin(full_database):
     
     automate_coin = Coin.get(Coin.coin_path == 'automate')
@@ -196,7 +196,28 @@ def test_remove_duties_from_coin(full_database):
     houston_duties = set([duty.duty_number for duty in houston.duties])
     assert houston_duties == set([10])
     
+def test_mark_coin_complete(full_database):
+    security_coin = Coin.get(Coin.coin_path == "security")
+    assert security_coin.is_complete == False
     
+    response = client.put("/coins/security/mark-complete")
+    
+    security_coin = Coin.get(Coin.coin_path == "security")
+    assert security_coin.is_complete == True
+    assert '"isComplete":true' in response.text
+
+def test_mark_coin_incomplete(full_database):
+    security_coin = Coin.get(Coin.coin_path == "security")
+    security_coin.update(is_complete=True).execute()
+    security_coin = Coin.get(Coin.coin_path == "security")   
+    assert security_coin.is_complete == True
+    
+    response = client.put("/coins/security/mark-incomplete")
+
+    security_coin = Coin.get(Coin.coin_path == "security")
+    assert security_coin.is_complete == False
+    assert '"isComplete":false' in response.text
+
 # duties routes
 
 def test_duties_route_returns_12_duties(full_database):
