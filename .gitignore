@@ -7,3 +7,4 @@ sandbox.py
 infrastructure/.terraform/
 infrastructure/*.tfstate
 infrastructure/*.tfstate.*
+.coverage
