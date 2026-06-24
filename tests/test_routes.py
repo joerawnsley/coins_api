@@ -71,7 +71,7 @@ def test_root_returns_json_object():
     data = response.json()
     assert isinstance(data, dict)
 
-# ----- get /coins -----
+# ----- GET /coins -----
 
 def test_coins_route_returns_a_list(full_database):
     response = client.get("/coins")
@@ -104,7 +104,7 @@ def test_data_types_in_coin(full_database):
     assert type(coin_3['duties']) == list
     assert type(coin_3['isComplete']) == bool
     
-# -------- post /coins --------
+# -------- POST /coins --------
 
 def test_add_coin_with_no_duties_to_empty_db(empty_database):
     
@@ -217,6 +217,18 @@ def test_mark_coin_incomplete(full_database):
     security_coin = Coin.get(Coin.coin_path == "security")
     assert security_coin.is_complete == False
     assert '"isComplete":false' in response.text
+
+# DELETE /coins
+def test_delete_coin(full_database):
+    coins_in_db = set([coin.coin_name for coin in Coin.select()])
+    assert coins_in_db == {'Automate', 'Houston, Prepare to Launch', 'Going Deeper', 'Assemble', 'Call Security'}
+    
+    response = client.delete("/coins/security")
+    
+    coins_in_db = set([coin.coin_name for coin in Coin.select()])
+    assert coins_in_db == {'Automate', 'Houston, Prepare to Launch', 'Going Deeper', 'Assemble'}
+    assert "deleted" in response.text
+
 
 # duties routes
 

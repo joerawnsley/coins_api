@@ -49,9 +49,9 @@ def single_coin(coin_path):
     return coin_to_dict(selected_coin)
 
 @app.delete("/coins/{coin_path}")
-def delete_coin():
-    # awaiting implementation
-    pass
+def delete_coin(coin_path):
+    Coin.delete().where(Coin.coin_path == coin_path).execute()
+    return "Coin deleted"
 
 # for adding and removing duties from coins
 @app.put("/coins/{coin_path}/add-duties")
@@ -108,7 +108,7 @@ def update_duty():
     # awaiting implementation
     pass
 
-@app.delete("/coins/{coin_path}")
-def delete_coin():
-    # awaiting implementation
-    pass
+@app.delete("/duties/{duty_number}")
+def delete_duty():
+    return "Error: Duties are forever. They cannot be deleted."
+    
