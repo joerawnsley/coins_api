@@ -23,6 +23,10 @@ class NewDuty(BaseModel):
     duty_number: int
     description: str
 
+class DutyUpdate(BaseModel):
+    duty_number: int | None = None
+    description: str
+
 
 @app.get("/coins")
 def list_coins():
@@ -91,6 +95,7 @@ def mark_coin_incomplete(coin_path):
 
 @app.get("/duties")
 def list_duties():
+    print("hello from listduties")
     query = Duty.select()
     duty_list = []
     for duty in query:
@@ -111,12 +116,16 @@ def add_duty(duty: NewDuty):
     created_duty = Duty.get(Duty.duty_number == duty.duty_number)
     return duty_to_dict(created_duty)
 
-@app.put("/duties/{duty_number}")
-def update_duty():
-    # awaiting implementation
-    pass
+@app.put("/duties/{duty_number}/update")
+def update_duty_description(duty_number, update: DutyUpdate):
+    selected_duty = Duty.get(Duty.duty_number == duty_number)
+    if update.duty_number != selected_duty.duty_number and update.duty_number is not None:
+        return "Error: cannot change duty numbers"
+    
+    selected_duty.description = update.description
+    selected_duty.save(only=[Duty.description])
+    return selected_duty
 
 @app.delete("/duties/{duty_number}")
 def delete_duty():
     return "Error: Duties are forever. They cannot be deleted."
-    

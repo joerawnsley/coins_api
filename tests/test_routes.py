@@ -258,3 +258,25 @@ def test_add_new_duty(empty_database):
     client.post("/duties", json={"duty_number": 1, "description": "Script and code"})
     assert Duty.select().count() == 1
     assert "Script and code" in Duty.get(Duty.duty_number == 1).description
+    
+def test_update_duty(full_database):
+    duty_3 = Duty.get(Duty.duty_number == 3)
+    assert "mob programming" in duty_3.description
+    
+    response = client.put("/duties/3/update", json={"description": "Work as part of an agile team"})
+    
+    duty_3 = Duty.get(Duty.duty_number == 3)
+    assert "mob programming" not in duty_3.description
+    assert "agile team" in duty_3.description
+    assert "agile team" in response.text
+    
+def test_duties_cannpt_be_deleted(full_database):
+    duty_13 = Duty.get(Duty.duty_number == 13)
+    assert "you build it, you run it" in duty_13.description
+    response = client.delete("duties/13")
+    duty_13 = Duty.get(Duty.duty_number == 13)
+    assert "you build it, you run it" in duty_13.description
+    assert "Error" in response.text
+
+    
+    
