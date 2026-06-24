@@ -166,15 +166,18 @@ def test_add_coin_returns_201(db_with_duties_but_no_coins):
     
 # add duties to coin
 def test_add_duty_to_coin(full_database):
+    
     automate_coin = Coin.get(Coin.coin_path == 'automate')
-    automate_duties = [duty.duty_number for duty in automate_coin.duties]
+    automate_duties = set([duty.duty_number for duty in automate_coin.duties])
+    assert automate_coin.duties == set([])
     
-    print("AUTOMATE COIN", coin_to_dict(automate_coin))
-    print(automate_duties)
-    assert automate_coin.duties == []
+    client.put(
+        "/coins/automate/add-duties", 
+        json = [1, 2, 3])
     
-    client.put("/coins/automate/add-duties", json = [1, 2, 3])
-    assert automate_duties == [1, 2, 3]
+    automate_coin = Coin.get(Coin.coin_path == 'automate')
+    automate_duties = set([duty.duty_number for duty in automate_coin.duties])
+    assert automate_duties == set([1, 2, 3])
     
     
 # duties routes
