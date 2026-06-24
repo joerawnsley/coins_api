@@ -1,7 +1,7 @@
 from src.app import app
 from fastapi.testclient import TestClient
 from src.database import db
-from src.utils import is_valid_uuid
+from src.utils import is_valid_uuid, coin_to_dict
 import pytest, json, peewee
 from src.models import Coin, Duty
 import os, logging
@@ -99,7 +99,6 @@ def test_all_coins_have_coin_name_and_id(full_database):
 def test_data_types_in_coin(full_database):
     response = client.get("/coins")
     coin_3 = response.json()[3]
-    print(coin_3)
     assert type(coin_3['coinName'] == str)
     assert is_valid_uuid(coin_3['id'])
     assert type(coin_3['duties']) == list
@@ -137,7 +136,6 @@ def test_add_coin_with_duties(db_with_duties_but_no_coins):
     
     new_coin = Coin.get(Coin.coin_path == "deeper")
     new_coin_duties = [duty.duty_number for duty in new_coin.duties.order_by(Duty.duty_number)]
-    print(new_coin_duties)
     assert new_coin_duties[0] == 11
     assert len(new_coin_duties) == 2
 
@@ -147,11 +145,9 @@ def test_coin_detail_page_gets_a_single_coin(full_database):
     assemble_coin = Coin.get(Coin.coin_path == 'assemble')
     duty_8 = Duty.get(Duty.duty_number == 8)
     assemble_coin.duties.add(duty_8)
-    print(assemble_coin.coin_name, assemble_coin.duties.first().duty_number)
     
     response = client.get("/coins/assemble")
     data = response.json()
-    print(data)
     
     assert type(data) == dict
     assert data["coinName"] == "Assemble"
@@ -167,6 +163,19 @@ def test_add_coin_returns_201(db_with_duties_but_no_coins):
     response = client.post("/coins", json=coin_data)
     
     assert response.status_code == 201
+    
+# add duties to coin
+def test_add_duty_to_coin(full_database):
+    automate_coin = Coin.get(Coin.coin_path == 'automate')
+    automate_duties = [duty.duty_number for duty in automate_coin.duties]
+    
+    print("AUTOMATE COIN", coin_to_dict(automate_coin))
+    print(automate_duties)
+    assert automate_coin.duties == []
+    
+    client.put("/coins/automate/add-duties", json = [1, 2, 3])
+    assert automate_duties == [1, 2, 3]
+    
     
 # duties routes
 
