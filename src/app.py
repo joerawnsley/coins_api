@@ -94,9 +94,9 @@ def list_duties():
     return duty_list
 
 @app.get("/duties/{duty_number}")
-def single_duty():
-    # awaiting implementation
-    pass
+def single_duty(duty_number):
+    selected_duty = Duty.get(Duty.duty_number == duty_number)
+    return duty_to_dict(selected_duty)
 
 @app.post("/duties")
 def add_duty():

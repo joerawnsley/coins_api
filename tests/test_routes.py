@@ -231,3 +231,12 @@ def test_all_duties_have_number_and_description(full_database):
     for duty in duty_list:
         assert 'dutyNumber' in duty
         assert 'description' in duty
+
+def test_get_single_duty(full_database):
+    response = client.get("/duties/6")
+    duty_object = response.json()
+    
+    assert duty_object["dutyNumber"] == 6
+    assert "orchestration" in duty_object["description"]
+    assert "cloud" not in duty_object["description"]
+    assert type(duty_object) == dict
