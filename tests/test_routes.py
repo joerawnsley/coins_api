@@ -252,3 +252,9 @@ def test_get_single_duty(full_database):
     assert "orchestration" in duty_object["description"]
     assert "cloud" not in duty_object["description"]
     assert type(duty_object) == dict
+    
+def test_add_new_duty(empty_database):
+    assert Duty.select().count() == 0
+    client.post("/duties", json={"duty_number": 1, "description": "Script and code"})
+    assert Duty.select().count() == 1
+    assert "Script and code" in Duty.get(Duty.duty_number == 1).description

@@ -19,6 +19,10 @@ class NewCoin(BaseModel):
     duties: list[int] | None = None
     is_complete: bool | None = None
 
+class NewDuty(BaseModel):
+    duty_number: int
+    description: str
+
 
 @app.get("/coins")
 def list_coins():
@@ -98,10 +102,14 @@ def single_duty(duty_number):
     selected_duty = Duty.get(Duty.duty_number == duty_number)
     return duty_to_dict(selected_duty)
 
-@app.post("/duties")
-def add_duty():
-    # awaiting implementation
-    pass
+@app.post("/duties", status_code=201)
+def add_duty(duty: NewDuty):
+    Duty.create(
+        duty_number = duty.duty_number,
+        description = duty.description
+    )
+    created_duty = Duty.get(Duty.duty_number == duty.duty_number)
+    return duty_to_dict(created_duty)
 
 @app.put("/duties/{duty_number}")
 def update_duty():
