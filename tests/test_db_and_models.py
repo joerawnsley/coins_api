@@ -16,14 +16,6 @@ def test_connection():
         db.close()
 
 # -------- empty database tests --------
-@pytest.fixture()
-def empty_database():
-    with db:
-        db.create_tables([Coin, Duty, Coin.duties.get_through_model()])
-        
-        yield
-        
-        db.drop_tables([Coin, Duty, Coin.duties.get_through_model()])
 
 def test_coin_table_is_empty(empty_database):
     
@@ -44,23 +36,7 @@ def test_add_a_duty(empty_database):
     assert type(duty.duty_number) is int
 
 # -------- full database tests --------
-
-with open('seed_data/seed_data.json') as json_data:
-    seed_data = json.load(json_data)
-    all_coins = seed_data['coins']
-    all_duties = seed_data['duties']
-    
-@pytest.fixture()
-def full_database():
-    with db:
-        db.create_tables([Coin, Duty, Coin.duties.get_through_model()])
-        Coin.insert_many(all_coins).execute()
-        Duty.insert_many(all_duties).execute()
-        
-        yield
-        
-        db.drop_tables([Coin, Duty, Coin.duties.get_through_model()])
-        
+     
 def test_5_coins_exist(full_database):
     assert Coin.select().count() == 5
 
