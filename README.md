@@ -74,11 +74,11 @@ The Coins API is automatically deployable on AWS using terraform. If you would l
 1. Get the app running locally (see above)
 2. Install Terraform (version 14.6 used for testing)
 3. Have an AWS account
-3. Log into your AWS account via the AWS CLI
+3. Sign into your AWS account via the AWS CLI
 
 ### Building the infrastructure
 
-Once you have installed Terraform and logged into you AWS account via the CLI, run:
+Once you have installed Terraform and authenticated using the AWS CLI, run:
 
 ```terraform apply```
 
@@ -112,4 +112,57 @@ Note: if you have just deployed the app, wait for the deployment to complete bef
 
 ## Endpoints
 
- <!-- placeholder for usage instructions -->
+Once the app is deployed or running locally, API calls are made to 
+```
+http://<IP address>:8000/<endpoint>
+```
+
+for example, if your IP address is 127.0.0.1, send a request to:
+
+```http://127.0.0.1:8000/``` for the welcome page, or
+
+```http://127.0.0.1/coins/automate``` for the automate coin details.
+
+The following endpoints are available:
+
+### GET endpoints
+
+- ```/``` returns a welcome message
+- ```/coins``` returns a list of all coins
+- ```/coins/<coin path>``` returns information about a specific coin. Coin path are a shortened form of a coin's name. List all coins to see the available coin paths
+- ```/duties``` returns a listof all duties
+- ```/duties/<duty_number>``` returns information about a specific duty
+
+### POST endpoints
+
+- ```/coins``` creates a new coin. Pass in the coin as JSON in the request body. For example:
+
+    ```
+        # POST request body:
+        {
+            "coin_name": "Going Deeper",
+            "coin_path": "deeper"
+        }
+    ```
+    The following fields are available:
+    - "coin_name": (string, required)
+    - "coin_path": (string, required, must be unique)
+    - "duties": (list of integers, optional, must reference duties currently in the database by their duty_number)
+    - "is_complete": (boolean, defaults to false if omitted)
+
+- ```/duties``` creates a new duty. Pass in the duty as JSON in the request body. For example:
+
+    ```
+    # POST request body
+    {
+        "duty_number": 1,
+        "description": "Script and code"
+    }
+    ```
+
+    Only two fields are available:
+    - "duty_number": (integer, required, must be unique)
+    - "description": (string, required)
+
+
+
