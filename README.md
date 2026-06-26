@@ -11,15 +11,22 @@ Requires python 3.12 and pip package manager
 
 ### Setting up the environment
 
-create a virtual environment by running the following command from the project root directory
+Clone this repository and navigate to the project root:
+
+```
+git clone https://github.com/joerawnsley/coins_api.git
+cd coins_api
+```
+
+Create a virtual environment by running the following command from the project root directory
 
 ``` python3 -m venv .venv ```
 
-activate the virtual environment
+Activate the virtual environment
 
 ``` source .venv/bin/activate```
 
-install the requirements
+Install the requirements
 
 ``` pip install -r requirements.txt ```
 
@@ -56,13 +63,42 @@ The app uses port 8000. To start a local server, run:
 
 ```fastapi dev src/app.py```
 
+You will get a link to the application running on localhost:8000. See below for a list of available API endpoints.
+
 ## Deployment
 
- <!-- placeholder for deployment instructions -->
+The Coins API is automatically deployable on AWS using terraform. If you would like to deploy the API in this way, first complete the pre-requisites.
+
+### Pre-requisites
+
+1. Get the app running locally (see above)
+2. Install Terraform (version 14.6 used for testing)
+3. Have an AWS account
+3. Log into your AWS account via the AWS CLI
+
+### Building the infrastructure
+
+Once you have installed Terraform and logged into you AWS account via the CLI, run:
+
+```terraform apply```
+
+Check the plan, and type ```yes``` to accept.
+
+### Deploying the code
+
+Once you have successfully built the infrastructure, there are two ways to deploy the API:
+1. Deploy on push: 
+    - commit and push a change to the repo, and it will deploy automatically
+2. Deploy manually on Github: 
+    - open the Github repository in your browser, and click the "Actions" tab. 
+    - In the left sidebar, click "build and deploy"
+    - in the blue horizontal bar, click "Run worklfow"
+    - ensure the "main" branch is selected, then click "Run Workflow"
+
 
 ### Getting the public IP
-  
-in the project root, run the folowing commands in the terminal:
+
+In the project root, run the folowing commands in the terminal:
 ```
 chmod +x get-public-ip.sh
 ```
@@ -72,6 +108,8 @@ then
 ```
 The public IP should appear in your terminal
 
-## Calling the API
+Note: if you have just deployed the app, wait for the deployment to complete before getting the public IP. This can take up to 10 minutes.
+
+## Endpoints
 
  <!-- placeholder for usage instructions -->
