@@ -54,7 +54,9 @@ To run the tests, ensure REMOTE_SCHEMA is set to `test` in you .env file. Run
 in the terminal.
 
 - Do not run tests when remote schema is set to 'prod'
-- DB_LOCATION in the .env file can be set to 'local' allowing you to run the tests against a local sqlite database for speed, or 'remote', allowing you to use your hosted cloud database
+- DB_LOCATION in the .env file can be set to 'local' allowing you to run the tests against a local sqlite database for speed, or 'remote', allowing you to run the same tests using your hosted cloud database
+
+Overall test coverage is 96%. To check coverage, run ```pytest --cov``` from the project root.
 
 ### Running the server
 
@@ -207,3 +209,6 @@ Used to update the properties of a coin or duty, or add a duty to a coin. Make a
 - ```/coins/<coin_path>``` the coin with the specified *coin_path* will be permanently deleted from the database
 
 *Note: Duties cannot be deleted*
+
+## Note on error handling
+to be added
