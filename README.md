@@ -1,6 +1,7 @@
 # Coins API
 
 The coins API is an API that returns apprenticeship coins, and allows them to be marked as complete to track progress against the standard
+
 <!-- what else does it do? placeholder -->
 
 ## Running/testing locally
@@ -20,17 +21,18 @@ cd coins_api
 
 Create a virtual environment by running the following command from the project root directory
 
-``` python3 -m venv .venv ```
+`python3 -m venv .venv`
 
 Activate the virtual environment
 
-``` source .venv/bin/activate```
+` source .venv/bin/activate`
 
 Install the requirements
 
-``` pip install -r requirements.txt ```
+`pip install -r requirements.txt`
 
 Create a .env file in the project root, and paste in the following text, replacing the values for DB_HOST and DB_PASSWORD with your connection string and password:
+
 ```
 DB_HOST=[your Digital Ocean connection string]
 DB_PASSWORD=[your Digital Ocean DB passowrd]
@@ -45,11 +47,12 @@ DB_LOGGING=off
 
 ### Running the tests
 
-To run the tests, ensure REMOTE_SCHEMA is set to ```test``` in you .env file. Run
+To run the tests, ensure REMOTE_SCHEMA is set to `test` in you .env file. Run
 
-```pytest```
+`pytest`
 
-in the terminal. 
+in the terminal.
+
 - Do not run tests when remote schema is set to 'prod'
 - DB_LOCATION in the .env file can be set to 'local' allowing you to run the tests against a local sqlite database for speed, or 'remote', allowing you to use your hosted cloud database
 
@@ -57,11 +60,11 @@ in the terminal.
 
 If you want to add some coins and duties to the database in order to test manually, you can add them (if they haven't already been added) by running the following command from the project root:
 
-```python3 seed_prod_db.py```
+`python3 seed_prod_db.py`
 
 The app uses port 8000. To start a local server, run:
 
-```fastapi dev src/app.py```
+`fastapi dev src/app.py`
 
 You will get a link to the application running on localhost:8000. See below for a list of available API endpoints.
 
@@ -74,68 +77,73 @@ The Coins API is automatically deployable on AWS using terraform. If you would l
 1. Get the app running locally (see above)
 2. Install Terraform (version 14.6 used for testing)
 3. Have an AWS account
-3. Sign into your AWS account via the AWS CLI
+4. Sign into your AWS account via the AWS CLI
 
 ### Building the infrastructure
 
 Once you have installed Terraform and authenticated using the AWS CLI, run:
 
-```terraform apply```
+`terraform apply`
 
-Check the plan, and type ```yes``` to accept.
+Check the plan, and type `yes` to accept.
 
 ### Deploying the code
 
 Once you have successfully built the infrastructure, there are two ways to deploy the API:
-1. Deploy on push: 
+
+1. Deploy on push:
     - commit and push a change to the repo, and it will deploy automatically
-2. Deploy manually on Github: 
-    - open the Github repository in your browser, and click the "Actions" tab. 
+2. Deploy manually on Github:
+    - open the Github repository in your browser, and click the "Actions" tab.
     - In the left sidebar, click "build and deploy"
     - in the blue horizontal bar, click "Run worklfow"
     - ensure the "main" branch is selected, then click "Run Workflow"
 
-
 ### Getting the public IP
 
 In the project root, run the folowing commands in the terminal:
+
 ```
 chmod +x get-public-ip.sh
 ```
+
 then
+
 ```
 ./get-public-ip.sh
 ```
+
 The public IP should appear in your terminal
 
-Note: if you have just deployed the app, wait for the deployment to complete before getting the public IP. This can take up to 10 minutes.
+*Note: if you have recently deployed the app, wait for the deployment to complete before attempting to get the public IP. This can take up to 10 minutes.*
 
 ## Endpoints
 
-Once the app is deployed or running locally, API calls are made to 
+Once the app is deployed or running locally, API calls are made to
+
 ```
 http://<IP address>:8000/<endpoint>
 ```
 
 for example, if your IP address is 127.0.0.1, send a request to:
 
-```http://127.0.0.1:8000/``` for the welcome page, or
+`http://127.0.0.1:8000/` for the welcome page, or
 
-```http://127.0.0.1/coins/automate``` for the automate coin details.
+`http://127.0.0.1/coins/automate` for the automate coin details.
 
 The following endpoints are available:
 
 ### GET endpoints
 
-- ```/``` returns a welcome message
-- ```/coins``` returns a list of all coins
-- ```/coins/<coin path>``` returns information about a specific coin. Coin path are a shortened form of a coin's name. List all coins to see the available coin paths
-- ```/duties``` returns a listof all duties
-- ```/duties/<duty_number>``` returns information about a specific duty
+- `/` returns a welcome message
+- `/coins` returns a list of all coins
+- `/coins/<coin path>` returns information about a specific coin. Coin path are a shortened form of a coin's name. List all coins to see the available coin paths
+- `/duties` returns a listof all duties
+- `/duties/<duty_number>` returns information about a specific duty
 
 ### POST endpoints
 
-- ```/coins``` creates a new coin. Pass in the coin as JSON in the request body. For example:
+- `/coins` creates a new coin. Pass in the coin as JSON in the request body. For example:
 
     ```
         # POST request body:
@@ -144,13 +152,14 @@ The following endpoints are available:
             "coin_path": "deeper"
         }
     ```
+
     The following fields are available:
     - "coin_name": (string, required)
     - "coin_path": (string, required, must be unique)
     - "duties": (list of integers, optional, must reference duties currently in the database by their duty_number)
     - "is_complete": (boolean, defaults to false if omitted)
 
-- ```/duties``` creates a new duty. Pass in the duty as JSON in the request body. For example:
+- `/duties` creates a new duty. Pass in the duty as JSON in the request body. For example:
 
     ```
     # POST request body
@@ -164,5 +173,37 @@ The following endpoints are available:
     - "duty_number": (integer, required, must be unique)
     - "description": (string, required)
 
+### PUT Endpoints
 
+Used to update the properties of a coin or duty, or add a duty to a coin. Make a call to the coin's *path* - the shortened form of its name
 
+- `/coins/<coin_path>/add-duties`: add one or more duties, passed in as an array (list) of integers representing duty numbers in the request body. A duty must exist in the database for each number in the array. For example:
+     ```
+    # endpoint
+    /coins/houston/add-duties
+
+    # request body
+    [5, 7, 10]    
+    ```
+    will add duties 5, 7 and 10 to the *Houston, Prepare to Launch* coin, provided all of the duties exist in the database.
+
+- `/coins/<coin_path>/remove-duties` works the same way as ```add-duties```. Duties to be removed from a coin can be passed in through the request body as an array (see *add-duties,* above)
+- `/coins/<coin_path>/mark-complete` marks a coin as completed. Specify the coin by its *coin_path* in the endpoint url
+- `/coins/<coin_path>/mark-incomplete` marks a coin as not completed. Specify the coin by its *coin_path* in the endpoint url
+- `/duties/<duty_number>/update` update a duty's description. Specify the number of an existing duty in the endpoint url. Pass in the new description as the "desctiption" field in a JSON object in the request body. For example:
+    ```
+    # endpoint url
+    /duties/1/update
+
+    # request body
+    {
+        "description": "Follow test driven development and ensure appropriate test coverage"
+    }
+
+*Note: Duty descriptions can be update, but not their numbers.*
+
+### DELETE endpoints
+
+- ```/coins/<coin_path>``` the coin with the specified *coin_path* will be permanently deleted from the database
+
+*Note: Duties cannot be deleted*
