@@ -139,9 +139,10 @@ The following endpoints are available:
 
 - `/` returns a welcome message
 - `/coins` returns a list of all coins
-- `/coins/<coin path>` returns information about a specific coin. Coin path are a shortened form of a coin's name. List all coins to see the available coin paths
+- `/coins/<coin_path>` returns information about a specific coin. Coin path are a shortened form of a coin's name. List all coins to see the available coin paths
 - `/duties` returns a listof all duties
 - `/duties/<duty_number>` returns information about a specific duty
+- `/coins/<coin_path>/list-duties` returns a list of duties associated with the specified coin, with full duty details including descriptions
 
 ### POST endpoints
 
