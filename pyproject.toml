@@ -1,2 +1,7 @@
+# set app entrypoint
+[tool.fastapi]
+entrypoint = "src.app:app"
+
+# declare root directory for tests
 [tool.pytest.ini_options]
 pythonpath = ["."]
