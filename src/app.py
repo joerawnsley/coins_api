@@ -91,6 +91,15 @@ def mark_coin_incomplete(coin_path):
     updated_coin = Coin.get(Coin.coin_path == coin_path)
     return coin_to_dict(updated_coin)
 
+@app.get("/coins/{coin_path}/list-duties")
+def list_coin_duties(coin_path):
+    selected_coin = Coin.get(Coin.coin_path == coin_path)
+    duties_list = []
+    for duty in selected_coin.duties:
+        duties_list.append(duty_to_dict(duty))
+    print(duties_list)
+    return duties_list
+
 # -----duties routes-----
 
 @app.get("/duties")

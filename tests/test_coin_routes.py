@@ -45,6 +45,17 @@ def test_data_types_in_coin(full_database):
     assert is_valid_uuid(coin_3['id'])
     assert type(coin_3['duties']) == list
     assert type(coin_3['isComplete']) == bool
+
+def test_list_duties_for_coin(full_database):
+    client.put('/coins/deeper/add-duties', json=[10, 11, 12])
+    response = client.get('coins/deeper/list-duties')
+    
+    assert len(response.json()) == 3
+    for number in ["10", "11", "12"]:
+        assert number in response.text 
+    assert "monitoring" in response.text
+    assert "publications" in response.text
+    assert "automate any manual tasks" in response.text
     
 # -------- POST /coins --------
 
