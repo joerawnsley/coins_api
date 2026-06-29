@@ -64,6 +64,8 @@ If you want to add some coins and duties to the database in order to test manual
 
 `python3 seed_prod_db.py`
 
+**Note: The above command will overwrite any coins and duties currently in the database, and remove any associations between coins and duties**. You'll need to link coins and duties using the API - see instructions below.
+
 The app uses port 8000. To start a local server, run:
 
 `fastapi dev src/app.py`
