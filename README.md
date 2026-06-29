@@ -212,7 +212,9 @@ Used to update the properties of a coin or duty, or add a duty to a coin. Make a
 
 ## Note on error handling and validation
 
-The Coins API currently has issues with error handling and validation. For example,
+The coins API validates that coin names, coin paths (the shortened form of a coin name) and duty numbers are unique, so duplicates cannot be created. But invalid inputs are not yet handled cleanly, so the following issues exist:
+
+- Attempting to create a duplicate duty results in "Internal Server Error" rather than an informative error message
 - Attempting to reference a coin or duty hat doesn't exist in a GET or PUT request results in "Internal Server Error" rather than an informative error message
 - Attempting to DELETE a coin or duty that doesn't exist returns a "deleted" message, even though nothing was deleted
 - There is no validation on coin paths other than uniqueness, So it's possible to create a coin with any arbitrary string as its path. This could cause problems, for exampe a coin path might be created with spaces in its path, making it difficult to access
