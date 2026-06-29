@@ -68,7 +68,7 @@ The app uses port 8000. To start a local server, run:
 
 `fastapi dev src/app.py`
 
-You will get a link to the application running on localhost:8000. See below for a list of available API endpoints.
+You will get a link to the application running on localhost:8000. You can view auto-generated API documentation detailing availble endpoints by clicking the second link (localhost:8000/docs) There is also information about API endpoints and usage below.
 
 ## Deployment
 
@@ -210,5 +210,12 @@ Used to update the properties of a coin or duty, or add a duty to a coin. Make a
 
 *Note: Duties cannot be deleted*
 
-## Note on error handling
-to be added
+## Note on error handling and validation
+
+The Coins API currently has issues with error handling and validation. For example,
+- Attempting to reference a coin or duty hat doesn't exist in a GET or PUT request results in "Internal Server Error" rather than an informative error message
+- Attempting to DELETE a coin or duty that doesn't exist returns a "deleted" message, even though nothing was deleted
+- There is no validation on coin paths other than uniqueness, So it's possible to create a coin with any arbitrary string as its path. This could cause problems, for exampe a coin path might be created with spaces in its path, making it difficult to access
+- There might be other, similar, error handling and validation issues
+
+These problems have been thought about and will be prioritised in the next update, but I haven't had time to properly test and implement the solution yet.
